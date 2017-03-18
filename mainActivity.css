@@ -15,13 +15,50 @@
 	width:90%;
 	margin-left:2.5%;
 }
+.btn-result{
+	margin-top:10%;
+	width:80%;
+	height:30%;
+	font-size:30px;
+}
+.btn-left{
+	height:20%;
+	width:100%;
+	margin-top:5px;
+}
+.btn-relation{
+	background-color:#ec971f;
+	color:#fff;
+	border-color:#ec971f;
+}
+.btn-menu-size{
+	width:100%;
+}
 .img-size{
 	margin-top:5px;
 	margin-bottom:5px;
 }
+.img-right-size{
+	width:95%;
+	height:50%;
+}
+
+.img-slide{
+	height:100%;
+	width:100%;
+	padding-left:5px;
+	padding-right:5px;
+}
 .btn-drag{
 	margin-right:5px;
 	margin-top:2px;
+}
+.row-size{
+	height:50%;
+}
+.col-size{
+	height:100%;
+	width:100%;
 }
 .x-row{
 	padding:0px;

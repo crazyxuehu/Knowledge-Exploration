@@ -59,22 +59,25 @@ function dragula (containers, options) {
     if (_dragging) {
       return;
     }
-
     var item = e.target;
+    var factor=item;
     if (containers.indexOf(item) !== -1) {
       return; // don't drag container itself
     }
+    //debugger
     while (containers.indexOf(item.parentElement) === -1) {
       if (invalidTarget(item)) {
         return;
       }
+     // debugger
       item = item.parentElement; // drag target should be a top element
     }
+   // debugger
     if (invalidTarget(item)) {
       return;
     }
-
     var container = item.parentElement;
+    item=factor;
     var movable = o.moves(item, container);
     if (!movable) {
       return;
@@ -86,7 +89,14 @@ function dragula (containers, options) {
 
     if (o.copy) {
       _copy = item.cloneNode(true);
+      var xid=_copy.attributes['xid'].nodeValue;
+      xid=xid+"_";
+      _copy.attributes['xid'].nodeValue=xid;
+      _copy.id=_copy.id+"_";
       rmClass(_copy,'btn-size');//移除原有的样式效果，使之与新容器一致
+      rmClass(_copy,'btn-result');
+     // debugger
+      rmClass(_copy,'btn-left');
       addClass(_copy,'gu-transit btn-drag');
     } else {
       addClass(item, 'gu-transit');
@@ -104,7 +114,9 @@ function dragula (containers, options) {
   }
 
   function invalidTarget (el) {
-    return el.tagName === 'A' || el.tagName === 'BUTTON';
+	 // debugger;
+	  console.log(el.tagName);
+    return el.tagName==="IMG"||el.tagName==="SPAN";
   }
 
   function end () {
