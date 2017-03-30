@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <div xmlns="http://www.w3.org/1999/xhtml" xid="window" class="window x-full-screen" component="$UI/system/components/justep/window/window" design="device:m;">  
-  <div component="$UI/system/components/justep/model/model" xid="model" style="height:auto;top:361px;left:55px;" onLoad="modelLoad"><div component="$UI/system/components/justep/data/data" autoLoad="true" xid="searchdata" idColumn="id" onAfterNew="searchdataAfterNew"><column label="QID" name="id" type="Integer" xid="xid1"></column>
+  <div component="$UI/system/components/justep/model/model" xid="model" style="height:auto;top:256px;left:50px;" onLoad="modelLoad"><div component="$UI/system/components/justep/data/data" autoLoad="true" xid="searchdata" idColumn="id" onAfterNew="searchdataAfterNew"><column label="QID" name="id" type="Integer" xid="xid1"></column>
   <column label="searchID" name="Qname" type="String" xid="xid2"></column>
   <column label="entity" name="Ename" type="String" xid="xid3"></column></div>
   <div component="$UI/system/components/justep/data/data" autoLoad="false" xid="resultdata" autoNew="false" idColumn="ID"><column label="菜品ID" name="ID" type="String" xid="xid4"></column>
@@ -12,7 +12,7 @@
   <column label="菜品图片" name="FNAME" type="String" xid="xid9"></column>
   <column label="菜品名称" name="ENAME" type="String" xid="xid10"></column>
   <column label="菜品类型" name="TYPE" type="String" xid="xid11"></column></div></div>
-<!--  <div xid="div13" style="height:100%;width:100%;">
+<!--   <div xid="div13" style="height:100%;width:100%;">
   <div style="height:100%;width:100%;">
   <div xid="div50" style="height:100%;width:100%;"> -->
   
@@ -21,10 +21,11 @@
    
   <div xid="div13" style="height:100%;width:100%;" class="swiper-container1"><div xid="div8" style="height:100%;width:100%;" class="swiper-wrapper">
    <div xid="div7" style="width:20%;height:100%;pull-left" class="swiper-slide menu menu-slide">
-    <div class="panel panel-default x-card" component="$UI/system/components/bootstrap/panel/panel" xid="panel2" style="height:100%;">
+	<div class="panel panel-default x-card" component="$UI/system/components/bootstrap/panel/panel" xid="panel2" style="height:100%;">
    <div class="panel-heading" xid="heading1" style="height:10%;">
     <h4 class="pull-left panel-title" xid="h41" style="width:100%;"><![CDATA[Search]]></h4></div> 
-   <div class="panel-body  x-scroll-view" xid="body1" style="height:80%;"><div class="x-scroll" component="$UI/system/components/justep/scrollView/scrollView" xid="scrollView2" >
+   <div class="panel-body  x-scroll-view" xid="body1" style="height:80%;">
+  <div class="x-scroll" component="$UI/system/components/justep/scrollView/scrollView" xid="scrollView2">
    <div class="x-content-center x-pull-down container" xid="div4">
     <i class="x-pull-down-img glyphicon x-icon-pull-down" xid="i4"></i>
     <span class="x-pull-down-label" xid="span4">下拉刷新...</span></div> 
@@ -33,16 +34,16 @@
     <li xid="menulist" class="x-min-height"></li></ul> </div></div>
    <div class="x-content-center x-pull-up" xid="div9">
     <span class="x-pull-up-label" xid="span5"></span></div> </div></div>
-   <div class="panel-footer" xid="footer1" style="height:10%;"></div></div></div> 
+   <div class="panel-footer" xid="footer1" style="height:10%;"></div></div> </div> 
    <div xid="div6" style="height:100%;width:100%;" class="swiper-slide content"><div component="$UI/system/components/bootstrap/row/row" class="row" xid="row1" style="height:10%;padding-left:10px;padding-right:10px;">
-   <div class="col" xid="col1" style="width:100%;height:100%;padding-top:10px;">
+   <div class="col" xid="col1" style="width:100%;height:100%;padding-top:10px;padding-left:10px;">
     <div component="$UI/system/components/justep/button/button" class="btn pull-left btn-color menu-button" style="margin-right:5px;" label="Q1" xid="Qbtn">
      <i xid="i1"></i>
      <span xid="span1">Q1</span></div> 
+     
     <a component="$UI/system/components/justep/button/button" class="btn btn-primary btn-sm btn-only-icon pull-right" label="button" xid="searchbtn" icon="linear linear-book" onClick="searchbtnClick">
      <i xid="i9" class="linear linear-book"></i>
-     <span xid="span9"></span></a> 
-    <input component="$UI/system/components/justep/input/input" class="form-control pull-right" xid="inputdata" style="width:40%;margin-right:10px;" list="keylist" autoComplete="false">
+     <span xid="span9"></span></a><input component="$UI/system/components/justep/input/input" class="form-control pull-right" xid="inputdata" style="width:40%;margin-right:10px;" list="keylist" autoComplete="false">
      <datalist id="keylist" xid="default1">
       <option label="123" value="123" xid="default2"></option>
       <option label="1234" value="1234" xid="default3"></option>
@@ -57,29 +58,29 @@
    <div class="col pull-left" xid="col4" style="width:50%;height:100%;">
     <div component="$UI/system/components/justep/row/row" class="x-row" xid="row20" style="height:100%;">
      <div class="x-col" xid="col25" style="height:100%;">
-      <div component="$UI/system/components/justep/row/row" class="x-row " xid="row10" style="height:60%;width:80%;padding-left:10px;">
+      <div component="$UI/system/components/justep/row/row" class="x-row" xid="row16" style="height:10%;width:80%;padding-left:20px;">
+   <div class="x-col font-auto" xid="col20" style="width:100%;height:100%;padding-left:10px;">Query Results</div>
+   </div><div component="$UI/system/components/justep/row/row" class="x-row " xid="row10" style="height:60%;width:80%;padding-left:10px;">
        <div class="x-col" xid="col28" style="height:100%;width:100%;padding-top:20%;padding-right:10%;">
         <div xid="divcontainer" id="divcontainer" style="width:100%;height:100%;" class="swiper-container">
          <div xid="divswip" id="divswip" style="height:100%;width:100%;" class="swiper-wrapper">
 		 </div> 
          <div xid="div15" class="swiper-pagination"></div></div> </div> </div> 
-      <div component="$UI/system/components/justep/row/row" class="x-row" xid="row11" style="height:40%;width:80%;">
+      <div component="$UI/system/components/justep/row/row" class="x-row" xid="row11" style="height:20%;width:80%;">
        <div class="x-col" xid="drag3" style="height:100%;width:100%;">
         <a component="$UI/system/components/justep/button/button" class="btn btn-success btn-result" label="Entity" xid="buttonswip">
          <i xid="i16"></i>
-         <span xid="span16"></span></a> </div> </div> </div> 
+         <span xid="span16"></span></a> </div> </div> 
+  </div> 
      <div class="x-col" xid="col26" style="height:100%;width:75%;">
       <div component="$UI/system/components/justep/row/row" class="x-row pull-right" xid="row12" style="height:100%;width:120%;">
        <div class="x-col" xid="col34" style="height:100%;width:100%;">
         
-  <div component="$UI/system/components/justep/tabs/tabs" class="pull-right text-success x-tabs" xid="tabs4" style="margin-right:10px;height:100%;width:100%;">
-   <div component="$UI/system/components/justep/panel/panel" class="x-panel" xid="panel3">
-    <div class="x-panel-top" xid="top3">
-     <ul class="nav nav-tabs" xid="navs3">
-      <li class="active" xid="li8">
-       <a content="tabContent_1" xid="tabItem5" style="background-color:#ec971f;color:#fff;">Relation</a></li> </ul> </div> 
-    <div class="x-panel-content" xid="content4">
-     <div component="$UI/system/components/justep/contents/contents" class="x-contents" active="0" xid="contents3"><div class="x-contents-content  x-scroll-view" xid="drag1">
+  <div component="$UI/system/components/justep/row/row" class="x-row" xid="row15" style="width:100%;height:8%;">
+   <div class="x-col" xid="col16" style="height:100%;width:100%;"><span component="$UI/system/components/justep/button/checkbox" class="x-checkbox pull-left" xid="LeftRelation" label="Relation" style="padding-left:5%; color:#ec971f;" checkedValue="1" uncheckedValue="0" value="1" checked="true" onChange="LetfRelationChange"></span>
+  <span component="$UI/system/components/justep/button/checkbox" class="x-checkbox pull-left" xid="LeftType" label="Type" style="padding-left:5%;color:#033c73;" checkedValue="1" uncheckedValue="0" value="1" checked="true" onChange="LeftTypeChange"></span></div>
+   </div>
+  <div class="x-contents-content  x-scroll-view" xid="drag1" style="width:100%;height:92%;">
    <div component="$UI/system/components/justep/scrollView/scrollView" xid="scrollView1" style="height:100%;width:100%;" class="x-scroll">
     <div class="x-content-center x-pull-down container" xid="div1">
      <i class="x-pull-down-img glyphicon x-icon-pull-down" xid="i31"></i>
@@ -87,75 +88,114 @@
     <div class="x-scroll-content" xid="leftcontainer" id="leftcontainer" style="height:90%;">
      <div class="x-row row-size pull-right" xid="row4">
       <div class="x-col" xid="col10" style="height:100%;width:100%;">
-       <img src="./img/2.jpg" alt="" xid="image19" class="img-rounded img-left-size"></img>
+       <a component="$UI/system/components/justep/button/button" class="btn btn-info btn-left" label="Type" xid="button4">
+   <i xid="i6"></i>
+   <span xid="span7">Type</span></a><img src="./img/2.jpg" alt="" xid="image19" class="img-rounded img-left-size"></img>
        <a component="$UI/system/components/justep/button/button" class="btn btn-success btn-left" label="Entity" xid="button10">
         <i xid="i10"></i>
-        <span xid="span10"></span></a> </div> 
+        <span xid="span10"></span></a> 
+  </div> 
       <div class="x-col" xid="col11" style="height:100%;width:100%;">
-       <img src="./img/3.jpg" alt="" xid="image17" class="img-rounded img-left-size"></img>
+       <a component="$UI/system/components/justep/button/button" class="btn btn-info btn-left" label="Type" xid="button6">
+   <i xid="i8"></i>
+   <span xid="span32">Type</span></a><img src="./img/3.jpg" alt="" xid="image17" class="img-rounded img-left-size"></img>
        <a component="$UI/system/components/justep/button/button" class="btn btn-success btn-left" label="Entity" xid="button11">
         <i xid="i11"></i>
-        <span xid="span11"></span></a> </div> 
+        <span xid="span11"></span></a> 
+  </div> 
       <div class="x-col" xid="col12" style="height:100%;width:100%;">
-       <img src="./img/3.jpg" alt="" xid="image18" class="img-rounded img-left-size"></img>
+       <a component="$UI/system/components/justep/button/button" class="btn btn-info btn-left" label="Type" xid="button7">
+   <i xid="i35"></i>
+   <span xid="span36">Type</span></a><img src="./img/3.jpg" alt="" xid="image18" class="img-rounded img-left-size"></img>
        <a component="$UI/system/components/justep/button/button" class="btn btn-success btn-left" label="Entity" xid="button12">
         <i xid="i12"></i>
-        <span xid="span12"></span></a> </div> </div> 
+        <span xid="span12"></span></a> 
+  </div> </div> 
      <div class="x-row row-size pull-right" xid="row5">
       <div class="x-col" xid="col24" style="height:100%;width:100%;">
-       <img src="./img/4.jpg" alt="" xid="image7" class="img-rounded img-left-size"></img>
+       <a component="$UI/system/components/justep/button/button" class="btn btn-relation btn-left" label="Relation" xid="button5">
+   <i xid="i7"></i>
+   <span xid="span8">Relation</span></a><img src="./img/4.jpg" alt="" xid="image7" class="img-rounded img-left-size"></img>
        <a component="$UI/system/components/justep/button/button" class="btn btn-success btn-left" label="Entity" xid="button13">
         <i xid="i14"></i>
-        <span xid="span13"></span></a> </div> 
+        <span xid="span13"></span></a> 
+  </div> 
       <div class="x-col" xid="col23" style="height:100%;width:100%;">
-       <img src="./img/5.jpg" alt="" xid="image5" class="img-rounded img-left-size"></img>
-       <a component="$UI/system/components/justep/button/button" class="btn btn-success btn-left" label="Entity" xid="button15">
-        <i xid="i13"></i>
-        <span xid="span15"></span></a> </div> 
+       
+        <a component="$UI/system/components/justep/button/button" class="btn btn-relation btn-left" label="Relation" xid="button8">
+   <i xid="i36"></i>
+   <span xid="span37">Relation</span></a><img src="./img/5.jpg" alt="" xid="image5" class="img-rounded img-left-size"></img>
+  <a component="$UI/system/components/justep/button/button" class="btn btn-success btn-left" label="Entity" xid="button15">
+   <i xid="i13"></i>
+   <span xid="span15"></span></a>
+  </div> 
       <div class="x-col" xid="col22" style="height:100%;width:100%;">
-       <img src="./img/6.jpg" alt="" xid="image6" class="img-rounded img-left-size"></img>
+       <a component="$UI/system/components/justep/button/button" class="btn btn-relation btn-left" label="Relation" xid="button9">
+   <i xid="i37"></i>
+   <span xid="span38">Relation</span></a><img src="./img/6.jpg" alt="" xid="image6" class="img-rounded img-left-size"></img>
        <a component="$UI/system/components/justep/button/button" class="btn btn-success btn-left" label="Entity" xid="button14">
         <i xid="i15"></i>
-        <span xid="span14"></span></a> </div> </div> 
+        <span xid="span14"></span></a> 
+  </div> </div> 
      <div class="x-row row-size pull-right" xid="row6">
       <div class="x-col" xid="col2" style="height:100%;width:100%;">
-       <img src="./img/4.jpg" alt="" xid="image16" class="img-rounded img-left-size"></img>
-       <a component="$UI/system/components/justep/button/button" class="btn btn-success btn-left" label="Entity" xid="button16">
+       <a component="$UI/system/components/justep/button/button" class="btn btn-relation btn-left" label="Relation" xid="button16">
         <i xid="i18"></i>
-        <span xid="span17"></span></a> </div> 
+        <span xid="span17"></span></a><img src="./img/4.jpg" alt="" xid="image16" class="img-rounded img-left-size"></img>
+        
+  
+  <a component="$UI/system/components/justep/button/button" class="btn btn-success btn-left" label="Entity" xid="button34">
+   <i xid="i40"></i>
+   <span xid="span41"></span></a></div> 
       <div class="x-col" xid="col3" style="height:100%;width:100%;">
-       <img src="./img/5.jpg" alt="" xid="image8" class="img-rounded img-left-size"></img>
+       <a component="$UI/system/components/justep/button/button" class="btn btn-relation btn-left" label="Relation" xid="button35">
+   <i xid="i41"></i>
+   <span xid="span42">Relation</span></a><img src="./img/5.jpg" alt="" xid="image8" class="img-rounded img-left-size"></img>
        <a component="$UI/system/components/justep/button/button" class="btn btn-success btn-left" label="Entity" xid="button17">
         <i xid="i3"></i>
-        <span xid="span18"></span></a> </div> 
+        <span xid="span18"></span></a> 
+  </div> 
       <div class="x-col" xid="col5" style="height:100%;width:100%;">
-       <img src="./img/6.jpg" alt="" xid="image9" class="img-rounded img-left-size"></img>
+       <a component="$UI/system/components/justep/button/button" class="btn btn-relation btn-left" label="Relation" xid="button36">
+   <i xid="i42"></i>
+   <span xid="span43">Relation</span></a><img src="./img/6.jpg" alt="" xid="image9" class="img-rounded img-left-size"></img>
        <a component="$UI/system/components/justep/button/button" class="btn btn-success btn-left" label="Entity" xid="button3">
         <i xid="i17"></i>
-        <span xid="span3"></span></a> </div> </div> 
+        <span xid="span3"></span></a> 
+  </div> </div> 
      <div class="x-row row-size" xid="row7">
       <div class="x-col col-size" xid="col8">
-       <img src="./img/2.jpg" alt="" xid="image21" class="img-rounded img-left-size"></img>
+       <a component="$UI/system/components/justep/button/button" class="btn btn-relation btn-left" label="Relation" xid="button37">
+   <i xid="i43"></i>
+   <span xid="span44">Relation</span></a><img src="./img/2.jpg" alt="" xid="image21" class="img-rounded img-left-size"></img>
        <a component="$UI/system/components/justep/button/button" class="btn btn-success btn-left" label="Entity" xid="button18">
         <i xid="i33"></i>
-        <span xid="span33"></span></a> </div> 
+        <span xid="span33"></span></a> 
+  </div> 
       <div class="x-col" xid="col7" style="height:100%;width:100%;">
-       <img src="./img/3.jpg" alt="" xid="image20" class="img-rounded img-left-size"></img>
+       <a component="$UI/system/components/justep/button/button" class="btn btn-relation btn-left" label="Relation" xid="button38">
+   <i xid="i44"></i>
+   <span xid="span45">Relation</span></a><img src="./img/3.jpg" alt="" xid="image20" class="img-rounded img-left-size"></img>
        <a component="$UI/system/components/justep/button/button" class="btn btn-success btn-left" label="Entity" xid="button32">
         <i xid="i32"></i>
-        <span xid="span35"></span></a> </div> 
+        <span xid="span35"></span></a> 
+  </div> 
       <div class="x-col" xid="col6" style="height:100%;width:100%;">
-       <img src="./img/3.jpg" alt="" xid="image22" class="img-rounded img-left-size"></img>
+       <a component="$UI/system/components/justep/button/button" class="btn btn-relation btn-left" label="Relation" xid="button39">
+   <i xid="i45"></i>
+   <span xid="span46">Relation</span></a><img src="./img/3.jpg" alt="" xid="image22" class="img-rounded img-left-size"></img>
        <a component="$UI/system/components/justep/button/button" class="btn btn-success btn-left" label="Entity" xid="button31">
         <i xid="i34"></i>
-        <span xid="span34"></span></a> </div> </div> </div> 
-    <div class="x-content-center x-pull-up" xid="div3"></div></div> </div></div></div> </div> </div>
-  </div> </div> </div> </div> </div> 
+        <span xid="span34"></span></a> 
+  </div> </div> </div> 
+    <div class="x-content-center x-pull-up" xid="div3"></div></div> </div></div> </div> </div> </div> </div> 
    <div class="col pull-right" xid="factor" style="width:50%;height:100%;padding-right:10px;">
     <div component="$UI/system/components/justep/row/row" class="x-row" xid="row9" style="width:100%;height:10%;">
      <div class="x-col" xid="col15" style="width:100%;height:100%;">
-      <span component="$UI/system/components/justep/button/checkbox" class="x-checkbox pull-left" xid="checkRelation" label="Relation" style="padding-left:5%; color:#ec971f;" checkedValue="1" uncheckedValue="0" value="1" checked="true" onChange="checkRelationChange" bind-load="checkRelationLoad"></span>
-      <span component="$UI/system/components/justep/button/checkbox" class="x-checkbox pull-left" xid="checkType" label="Type" style="padding-left:5%;color:#033c73;" checkedValue="1"  uncheckedValue="0" value="1" checked="true" onChange="checkTypeChange"></span></div> </div> 
+      <div xid="div2" class="pull-left font-auto" style="height:100%;width:40%;">Recommend Results</div>
+     <label class="pull-left" style="margin-right:10px;font-size:20px;color:#ec971f;"><input id="checkRelation" class="mui-switch mui-switch-animbg" type="checkbox" checked="true" style="margin-right:15px;" data-bind='click:checkChange'></input>Relation</label>
+     <label class="pull-left" style="font-size:20px;color:#5bc0de"><input id="checkType" class="mui-switch mui-switch-animbg" type="checkbox" checked="true" style="margin-right:15px;" data-bind='click:checkChange'></input>Type</label>
+  </div> </div> 
     
     
   <div component="$UI/system/components/justep/row/row" class="x-row" xid="row13" style="width:100%;height:90%;">
@@ -217,9 +257,14 @@
      <span xid="span24">Entity</span></div> </div> </div></div></div>
    <div class="x-content-center" xid="div20" style="height:5%;width:100%;">
    </div> </div></div>
-   </div></div> </div>
+   </div>
+ </div> </div>
   <div component="$UI/system/components/justep/row/row" class="x-row" xid="row3" style="height:30%;">
    <div class="x-col x-col-fixed" xid="colgraph" style="width:100%;height:100%;">
     <div xid="relaEx" style="height:100%;width:50%;" class="pull-left"></div>
-    <div xid="metapath" class="pull-right" style="height:100%;width:50%;"></div></div> </div></div></div></div>
-  </div><!-- </div></div></div> -->
+    <div xid="metapath" class="pull-right" style="height:100%;width:50%;"></div></div> </div>
+  <div component="$UI/system/components/justep/tabs/tabs" class="x-tabs" xid="tabs2" style="height:0%;width:0%;">
+   <div component="$UI/system/components/justep/panel/panel" class="x-panel" xid="panel3">
+    <div class="x-panel-content" xid="content3">
+     <div component="$UI/system/components/justep/contents/contents" class="x-contents" xid="contents2">
+	</div> </div> </div> </div></div></div></div></div>

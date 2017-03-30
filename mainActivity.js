@@ -71,7 +71,8 @@ define(function(require){
 		        text: desc,
 		        textStyle:{
 		        	color:'gray',
-		        	fontStyle:'italic'
+		        	fontStyle:'italic',
+		        	//fontFamily:'Times New Roman'
 		        }
 		    },
 		    tooltip: {},
@@ -194,33 +195,14 @@ define(function(require){
 			, slideToClickedSlide: true
 		})
 	};
-	Model.prototype.checkRelationChange = function(event){
-	   var Reldom=event.source;
-	   var Typdom=this.comp("checkType");
-	   var RelValue=Reldom.get("value");
-	   var TypValue=Typdom.get("value");
-	   //debugger
-	   if(RelValue=="1"&&TypValue=="0"){
+	Model.prototype.checkChange = function(event){
+	   var Reldom=$('#checkRelation');
+	   var Typdom=$('#checkType');
+	   if(Reldom.is(':checked')&&!Typdom.is(':checked')){
 		  this.changeType("1");
-	   }else if(RelValue=="1"&&TypValue=="1"){
+	   }else if(Reldom.is(':checked')&&Typdom.is(':checked')){
 		   this.changeType("2");
-	   }else if(RelValue=="0"&&TypValue=="1"){
-		   this.changeType("0");
-	   }else{
-		   this.changeType("3");
-	   }
-		
-	};
-	Model.prototype.checkTypeChange = function(event){
-	   var Typdom=event.source;
-	   var Reldom=this.comp("checkRelation");
-	   var RelValue=Reldom.get("value");
-	   var TypValue=Typdom.get("value");
-	   if(RelValue=="1"&&TypValue=="0"){
-		  this.changeType("1");
-	   }else if(RelValue=="1"&&TypValue=="1"){
-		   this.changeType("2");
-	   }else if(RelValue=="0"&&TypValue=="1"){
+	   }else if(!Reldom.is(':checked')&&Typdom.is(':checked')){
 		   this.changeType("0");
 	   }else{
 		   this.changeType("3");
@@ -286,8 +268,14 @@ define(function(require){
 
 	};
 	Model.prototype.searchbtnClick = function(event){
-	    var Reldom=this.comp("checkRelation");
-	    var Typdom=this.comp("checkType");
+	     var Reldom=$('#checkRelation');
+	     var Typdom=$('#checkType');
+	     Reldom.attr('checked',true);
+	     Typdom.attr('checked',true);
+	    var Releftdom=this.comp("LeftRelation");
+	    var Typleftdom=this.comp("LeftType");
+	    Releftdom.val(1);
+	    Typleftdom.val(1);
 	    Reldom.val(1);
 	    Typdom.val(1);
 	    var dom=this.comp("btncontainer");
@@ -319,6 +307,7 @@ define(function(require){
 		});
 		this.resultLoad();
 		this.recommendLoad();
+		//debugger
 	};
 	Model.prototype.searchdataAfterNew = function(event){
 		var list=event["rows"];
@@ -362,7 +351,7 @@ define(function(require){
 						array.merge(swipArray,[content]);						
 						array.merge(resArray,[result[i]]);
 					}else{
-						break;
+						array.merge(resArray,[result[i]]);
 					}
 				}	
 					me.swiper.appendSlide(swipArray);
@@ -370,10 +359,13 @@ define(function(require){
 					me.swiper.updatePagination();
 					me.swiper.updateClasses();
 					var data=me.comp("resultdata");
+					data.directDeleteMode=true;
+					data.confirmDelete=false;
+					data.deleteAllData();
 					data.newData({
 						"defaultValues":resArray
 					});
-					var dom=$('#leftcontainer');
+					/*var dom=$('#leftcontainer');
 					dom.empty();
 				//	debugger
 					var row=result.length-i;
@@ -403,7 +395,8 @@ define(function(require){
 						}
 						doc=doc+'</div>';
 					}
-					$(doc).appendTo(dom);		 	
+					$(doc).appendTo(dom);		*/
+					me.leftchangetype("2"); 	
 				},
 				error:function(er,status){
 					alert(er);
@@ -422,11 +415,11 @@ define(function(require){
 				success:function(result,status){
 					var parNode=$('#rec');
 					parNode.empty();
-					var row='<div component="$UI/system/components/justep/row/row" class="x-row row-size" xid="row19">';
+/*					var row='<div component="$UI/system/components/justep/row/row" class="x-row row-size" xid="row19">';
 					var col='<div class="x-col col-size" xid="col43">';
-					var doc='';
+					var doc='';*/
 					for(var i=0;i<result.length;i++){
-						var content="";
+					/*	var content="";
 						var img="";
 						var btn="";
 						if(result[i]["TYPE"]=="0"){
@@ -446,16 +439,16 @@ define(function(require){
 							doc=doc+row+col+content+img+btn;
 						}else{
 							doc=doc+col+content+img+btn;
-						}		    					
+						}		    					*/
 						array.merge(recArray,[result[i]]);
 					}
 					//debugger
-					while(i%3!==0){
+			/*		while(i%3!==0){
 						doc=doc+col+'</div>';
 						i++;
 					}
 					doc=doc+'</div>';
-					$(doc).appendTo(parNode);
+					$(doc).appendTo(parNode);*/
 					var data=me.comp("recdata");
 					data.directDeleteMode=true;
 					data.confirmDelete=false;
@@ -470,8 +463,97 @@ define(function(require){
 							//alert(123);
 						}			
 					});
+					me.changeType("2");
 				}
 			});	
+	};
+	Model.prototype.LetfRelationChange = function(event){
+		   var Typdom=this.comp("LeftType");
+		   var Reldom=event.source;
+		   var RelValue=Reldom.get("value");
+		   var TypValue=Typdom.get("value");
+		   if(RelValue=="1"&&TypValue=="0"){
+			  this.leftchangetype("1");
+		   }else if(RelValue=="1"&&TypValue=="1"){
+			   this.leftchangetype("2");
+		   }else if(RelValue=="0"&&TypValue=="1"){
+			   this.leftchangetype("0");
+		   }else{
+			   this.leftchangetype("3");
+		   }
+		
+	};
+	Model.prototype.LeftTypeChange = function(event){
+		   var Typdom=event.source;
+		   var Reldom=this.comp("LeftRelation");
+		   var RelValue=Reldom.get("value");
+		   var TypValue=Typdom.get("value");
+		   if(RelValue=="1"&&TypValue=="0"){
+			  this.leftchangetype("1");
+		   }else if(RelValue=="1"&&TypValue=="1"){
+			   this.leftchangetype("2");
+		   }else if(RelValue=="0"&&TypValue=="1"){
+			   this.leftchangetype("0");
+		   }else{
+			   this.leftchangetype("3");
+		   }
+	};
+	Model.prototype.leftchangetype=function(num){
+		var data=this.comp("resultdata");
+	//	debugger
+		var dom=$('#leftcontainer');
+		dom.empty();
+		if(num=="3") return;
+		var row='<div  class="x-row row-size" xid="222" >';
+		var col='<div class="x-col col-size" xid="333">';
+		var doc='';
+		var i=0;
+		data.each(function(param){
+			var content="";
+			var img="";
+			var btn="";
+			var flag=true;
+			//debugger
+			if(param.row.val('TYPE')=="0"&&(num=="0"||num=="2")){
+				flag=false;
+				content='<a component="$UI/system/components/justep/button/button" class="btn btn-info btn-left"  ';
+				content=content+'label="Type" xid="button30"><i></i><span>Type</span></a>';
+				img='<img src="./img/';
+				img=img+param.row.val('FNAME')+'" xid="image15" class="img-rounded  img-left-size"></img>';
+				btn='<a component="$UI/system/components/justep/button/button" class="btn btn-success btn-left"';
+				btn=btn+'label="'+param.row.val('ENAME')+'" xid="button27"><i></i><span>'+param.row.val('ENAME');
+				btn=btn+'</span></a> </div>';
+				if(i%3===0){
+					if(i)doc=doc+'</div>';
+					doc=doc+row+col+content+img+btn;
+				}else{
+					doc=doc+col+content+img+btn;
+				}
+				i++;
+			}
+			if(param.row.val('TYPE')=="1"&&flag&&(num=="1"||num=="2")){
+				content='<a component="$UI/system/components/justep/button/button" class="btn btn-left btn-relation" ';
+				content=content+'label="Relation" xid="button30"><i></i><span>Relation</span></a>';
+				img='<img src="./img/';
+				img=img+param.row.val('FNAME')+'" xid="image15" class="img-rounded img-left-size"></img>';
+				btn='<a component="$UI/system/components/justep/button/button" class="btn btn-success btn-left"';
+				btn=btn+'label="'+param.row.val('ENAME')+'" xid="button27"><i></i><span>'+param.row.val('ENAME');
+				btn=btn+'</span></a> </div>';
+				if(i%3===0){
+					if(i)doc=doc+'</div>';
+					doc=doc+row+col+content+img+btn;
+				}else{
+					doc=doc+col+content+img+btn;
+				}
+				i++;
+			}
+		});
+		while(i%3!==0){
+			doc=doc+col+'</div>';
+			i++;
+		}
+		doc=doc+'</div>';
+		$(doc).appendTo(dom);		    				
 	};
 	return Model;
 });

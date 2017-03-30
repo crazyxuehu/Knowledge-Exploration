@@ -9,7 +9,6 @@ require('$model/UI2/system/components/bootstrap/row/row');
 require('$model/UI2/system/components/justep/tabs/tabs');
 require('$model/UI2/system/components/justep/panel/child');
 require('$model/UI2/system/components/justep/panel/panel');
-require('$model/UI2/system/components/justep/contents/content');
 require('$model/UI2/system/components/justep/button/checkbox');
 require('$model/UI2/system/components/justep/row/row');
 require('$model/UI2/system/components/justep/contents/contents');
