@@ -26,13 +26,16 @@ public class Relation {
 		this.direction=dirction;
 		this.relationId=relaitonId;
 		this.name=DataUtil.getRelationName(relaitonId);
+		this.score=1;
 	}
 	public Relation(int type,int direction){
 		this.type=type;
 		this.direction=direction;
+		this.score=1;
 	}
 	public Relation(){
 		type=1;
+		this.score=1;
 	}
 	public int getType() {
 		return type;

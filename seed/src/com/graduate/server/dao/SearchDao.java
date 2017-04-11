@@ -4,14 +4,18 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.graduate.server.model.Entity;
+
 
 public interface SearchDao {
 
-	String getPwd(String name);
+	public String getPwd(String name);
 
-	List getResult();
+	public List getResult();
 
-	void loadData(List list);
-	void testLobHandler(String entity,String text);
+	public void loadData(List list);
+	public void testLobHandler(String entity,String text);
 
+	public void saveQuery(List<Entity> list);
+	public List getPopular();
 }

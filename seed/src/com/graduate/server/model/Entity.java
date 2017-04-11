@@ -1,5 +1,7 @@
 package com.graduate.server.model;
 
+import com.graduate.server.common.DataUtil;
+
 public class Entity {
 	int type;
 	int id;
@@ -10,6 +12,11 @@ public class Entity {
 		type=1;
 		score=1;
 	}
+	public Entity(int id,double score){
+		this.id=id;
+		this.score=score;
+		this.name=DataUtil.getEntityName(id);
+	}
 	public Entity(int id){
 		this.id=id;
 		score=1;
@@ -17,6 +24,7 @@ public class Entity {
 	public Entity(int id,String name){
 		this.id=id;
 		this.name=name;
+		score=1;
 	}
 	public int getType() {
 		return type;
@@ -43,14 +51,14 @@ public class Entity {
 		this.category = category;
 	}
 	public double getScore() {
-		return score;
+		return this.score;
 	}
 	public void setScore(double score) {
 		this.score = score;
 	}
-	public static Entity setEntity(int id){
+/*	public static Entity setEntity(int id){
 		return new Entity(id);
-	}
+	}*/
 /*	@Override
 	public boolean equals(Object obj){
 		if(!(obj instanceof Entity)){

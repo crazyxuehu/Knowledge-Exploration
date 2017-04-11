@@ -22,6 +22,7 @@ import com.graduate.server.common.DataUtil;
 import com.graduate.server.dao.SearchDao;
 import com.graduate.server.model.Entity;
 import com.graduate.server.model.Feature;
+import com.graduate.server.model.Path;
 import com.graduate.server.model.Relation;
 import com.graduate.server.model.RelationSize;
 import com.graduate.server.service.SearchService;
@@ -30,29 +31,10 @@ import com.graduate.server.service.SearchService;
 public class SearchServiceImp implements SearchService {
 
 	@Autowired SearchDao dao;
-	
-	public void getTrainData(String path) {
-		System.out.println(System.currentTimeMillis());
-		HashMap mp=DataLoad.EntityId;
-		System.out.println("EntityId:"+mp.size());
-		mp=DataLoad.IdEntity;
-		System.out.println("IdEntity:"+mp.size());
-		mp=DataLoad.EntityVector;
-		System.out.println("EntityVector:"+mp.size());
-		mp=DataLoad.IdRelation;
-		System.out.println("IdRelation:"+mp.size());
-		mp=DataLoad.RelationId;
-		System.out.println("RelationId:"+mp.size());
-		mp=DataLoad.RelationVector;
-		System.out.println("RelationVector:"+mp.size());
-		mp=DataLoad.tripleHash;
-		System.out.println("TripleHash:"+mp.size());
-		System.out.println(System.currentTimeMillis());
-	}
 
 	@Override//获取查询实体
 	public List getQueryEntity(List<String>list) {
-		List<Entity>ll=list.parallelStream()
+		List<Entity>ll=list.stream()
 				.map(word->DataUtil.getEnityByName(word))
 				.collect(Collectors.toList());
 		return ll;
@@ -79,6 +61,34 @@ public class SearchServiceImp implements SearchService {
 		return featureList;
 	}
 
+	@Override
+	public void saveQuery(List<Entity> list) {
+		dao.saveQuery(list);	
+	}
+
+	@Override
+	public List<Path> getMetaPathByCategory(List<Entity> queryList) {
+		List<Entity>categoryList=CommonService.getCategory(queryList);
+		List<Path>PathList=new ArrayList<Path>();
+		for(Entity category:categoryList){
+			List<Relation>list=CommonService.getTargetRelation(queryList, category);
+			PathList.add(new Path(category,list));
+		}
+		return PathList;
+	}
+
+	@Override
+	public List<Path> getMetaPathByRelation(List<Entity> queryList) {
+		List<Path>pathList=new ArrayList<Path>();
+		for(Relation relation:CommonService.getRelationTop(queryList)){
+			List<Entity>entityList=CommonService.getTarget(queryList, relation);
+			List<Entity> categoryList=CommonService.getCategory(entityList);
+			pathList.add(new Path(relation,categoryList));
+		}
+		return pathList;
+	}
+	
+	
 	
 	
 	

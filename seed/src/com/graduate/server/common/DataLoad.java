@@ -19,13 +19,14 @@ public class DataLoad extends HttpServlet{
 	 */
 	private static final long serialVersionUID = 1L;
 	private static String path="F:\\graduate\\data\\instance_processed\\";
-	public static int D_Enity=100;
+	public static int D_Entity=100;
 	public static int D_Relation=100;
 	public static int Relation_type=0;
 	public static int Entity_type=1;
 	public static int Error_type=-1;
 	public static int Out_Feature_Size=3;
 	public static int Out_Entity_Size=6;
+	public static int Out_Path_Size=30;
 	//数据集索引
 	public static HashMap<Integer, HashMap<Integer,HashMap<Integer, HashSet<Integer>>>> tripleHash = new HashMap<>();//原始数据集
 	public static HashMap<String, Integer> EntityId = new HashMap<>();
@@ -139,7 +140,7 @@ public class DataLoad extends HttpServlet{
 			int count=0;
 			while((tmpString = reader.readLine()) != null) {
 				if(IdEntity.containsKey(count)){
-					EntityVector.put(count, new double[D_Enity]);
+					EntityVector.put(count, new double[D_Entity]);
 					String []ss=tmpString.split("\t");
 					for(int i=0;i<ss.length;i++){
 						EntityVector.get(count)[i]=Double.parseDouble(ss[i]);

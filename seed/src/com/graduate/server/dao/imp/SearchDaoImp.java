@@ -14,6 +14,7 @@ import org.springframework.jdbc.support.lob.DefaultLobHandler;
 
 import com.graduate.server.basedao.BaseDao;
 import com.graduate.server.dao.SearchDao;
+import com.graduate.server.model.Entity;
 
 @Repository
 public class SearchDaoImp extends BaseDao implements SearchDao {
@@ -59,5 +60,29 @@ public class SearchDaoImp extends BaseDao implements SearchDao {
 		}
 		});
 		}
+
+	@Override
+	public void saveQuery(List<Entity> list) {
+		for(Entity entity:list){
+			StringBuffer  sql=new StringBuffer();
+			sql.append("insert into xuehu.history values(historyid.nextval,?,?,' ',sysdate)");
+			try{
+			getJdbcTemplate().update(sql.toString(),new Object[]{entity.getId(),entity.getName()});
+			}catch(Exception e){
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+			}
+		}
+		
+	}
+
+	@Override
+	public List getPopular() {
+		StringBuffer sql=new StringBuffer();
+		sql.append("select entityname from(select count(*) as num,entityname from xuehu.history");
+		sql.append(" group by entityname order by num desc) where rownum<4");
+		List<String>list=getJdbcTemplate().queryForList(sql.toString(),String.class);
+		return list;
+	}
 	
 }

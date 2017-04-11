@@ -20,11 +20,16 @@
 				function fact(){
 					var nn=$('#name').val();
 					var list=new Array();
-					list.push("do you wanna touch me");
-					list.push("iskul bukol");
+					//list.push("do you wanna touch me");
+					list.push("bryan gordon");
+					list.push("aibou: the movie iii");
+					//list.push("trying again (tv series)");
+					//list.push("lucrezia borgia (1922 film)");
+					var head='bryan gordon';
+					var tail='palimos ng pag-ibig (tv series)';
 					$.ajax({
 						url:"/seed/test",
-						data:JSON.stringify(list),
+						data:JSON.stringify({mylist:list,head:head,tail:tail}),
 						type:"POST",
 						dataType:'json',
 						contentType:"application/json",

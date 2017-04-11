@@ -19,6 +19,11 @@ public class Feature {
 		this.relation=relation;
 		this.target=target;
 	}
+	public Feature(Relation relation,Entity target,double score){
+		this.relation=relation;
+		this.target=target;
+		this.score=score;
+	}
 	public Feature(Entity query,Relation relation,Entity target,double score){
 		this.query=query;
 		this.relation=relation;
