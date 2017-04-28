@@ -22,6 +22,7 @@ import com.graduate.server.common.DataUtil;
 import com.graduate.server.dao.SearchDao;
 import com.graduate.server.model.Entity;
 import com.graduate.server.model.Feature;
+import com.graduate.server.model.MetaPath;
 import com.graduate.server.model.Path;
 import com.graduate.server.model.Relation;
 import com.graduate.server.model.RelationSize;
@@ -36,6 +37,7 @@ public class SearchServiceImp implements SearchService {
 	public List getQueryEntity(List<String>list) {
 		List<Entity>ll=list.stream()
 				.map(word->DataUtil.getEnityByName(word))
+				.filter(word->word!=null)
 				.collect(Collectors.toList());
 		return ll;
 	}
@@ -56,9 +58,8 @@ public class SearchServiceImp implements SearchService {
 				}
 			}
 		}
-		
-		//System.out.println(System.currentTimeMillis());
-		return featureList;
+		return featureList.stream()
+		.sorted((a,b)->a.getQuery().getName().compareTo(b.getQuery().getName())==0?a.getRelation().getName().compareTo(b.getRelation().getName()):a.getQuery().getName().compareTo(b.getQuery().getName())).collect(Collectors.toList());
 	}
 
 	@Override
@@ -67,25 +68,43 @@ public class SearchServiceImp implements SearchService {
 	}
 
 	@Override
-	public List<Path> getMetaPathByCategory(List<Entity> queryList) {
+	public List<MetaPath> getMetaPathByCategory(List<Entity> queryList) {
 		List<Entity>categoryList=CommonService.getCategory(queryList);
-		List<Path>PathList=new ArrayList<Path>();
+		List<MetaPath>PathList=new ArrayList<MetaPath>();
+		int count=0;
 		for(Entity category:categoryList){
+			count++;
 			List<Relation>list=CommonService.getTargetRelation(queryList, category);
-			PathList.add(new Path(category,list));
+			//System.out.println(list.get(0).getScore()+" "+category.getScore());
+			PathList.add(new MetaPath(category,list.get(0),list.get(0).getScore()+category.getScore(),1));
 		}
+		System.out.println("category:"+count);
 		return PathList;
 	}
 
 	@Override
-	public List<Path> getMetaPathByRelation(List<Entity> queryList) {
-		List<Path>pathList=new ArrayList<Path>();
+	public List<MetaPath> getMetaPathByRelation(List<Entity> queryList) {
+		List<MetaPath>pathList=new ArrayList<MetaPath>();
+		int count=0;
 		for(Relation relation:CommonService.getRelationTop(queryList)){
+			count++;
 			List<Entity>entityList=CommonService.getTarget(queryList, relation);
 			List<Entity> categoryList=CommonService.getCategory(entityList);
-			pathList.add(new Path(relation,categoryList));
+			//System.out.println(categoryList.get(0).getScore()+" "+relation.getScore());
+			pathList.add(new MetaPath(categoryList.get(0),relation,relation.getScore()+categoryList.get(0).getScore(),0));
 		}
+		System.out.println("relation:"+count);
 		return pathList;
+	}
+
+	@Override
+	public List<MetaPath> getMetaPath(List<Entity> queryList) {
+		List<MetaPath>categorList=getMetaPathByCategory(queryList);
+		List<MetaPath>relationList=getMetaPathByRelation(queryList);
+		List<MetaPath>list=Stream.concat(categorList.stream(),relationList.stream())
+		.collect(Collectors.toList());
+		list=list.stream().sorted((a,b)->a.getScore()<b.getScore()?1:-1).collect(Collectors.toList());
+		return list;
 	}
 	
 	

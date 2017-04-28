@@ -5,19 +5,20 @@ import java.util.List;
 
 
 public class Result {
-	private List<String>  queryEntity ;
+	private List<Entity>  queryEntity ;
 	private List<Feature> queryFeatureList ;
-	private List<Entity> recomendEntityList ;
+	private SimEntity simEntityList ;
 	private List<Feature>recomendFeatureList;
-	private List<Path>pathList;
+	private List<MetaPath> metaPathList;
+	private Visual vis;
 	public Result(){
-		queryEntity=new ArrayList<String>();
+		queryEntity=new ArrayList<Entity>();
 		queryFeatureList=new ArrayList<Feature>();
-		recomendEntityList=new ArrayList<Entity>();
+		simEntityList=new SimEntity();
 		recomendFeatureList=new ArrayList<Feature>();
-		pathList=new ArrayList<Path>();
+		metaPathList=new ArrayList<MetaPath>();
 	}
-	public List getQueryEntity() {
+	public List<Entity>getQueryEntity() {
 		return queryEntity;
 	}
 	public void setQueryEntity(List queryEntity) {
@@ -29,11 +30,11 @@ public class Result {
 	public void setQueryFeatureList(List<Feature> queryFeatureList) {
 		this.queryFeatureList = queryFeatureList;
 	}
-	public List<Entity> getRecomendEntityList() {
-		return recomendEntityList;
+	public SimEntity getSimEntityList() {
+		return simEntityList;
 	}
-	public void setRecomendEntityList(List<Entity> recomendEntityList) {
-		this.recomendEntityList = recomendEntityList;
+	public void setSimEntityList(SimEntity simEntityList) {
+		this.simEntityList = simEntityList;
 	}
 	public List<Feature> getRecomendFeatureList() {
 		return recomendFeatureList;
@@ -41,11 +42,17 @@ public class Result {
 	public void setRecomendFeatureList(List<Feature> recomendFeatureList) {
 		this.recomendFeatureList = recomendFeatureList;
 	}
-	public List<Path> getPathList() {
-		return pathList;
+	public List<MetaPath> getMetaPathList() {
+		return metaPathList;
 	}
-	public void setPathList(List<Path> pathList) {
-		this.pathList = pathList;
+	public void setMetaPathList(List<MetaPath> metaPathList) {
+		this.metaPathList = metaPathList;
 	}
-	
+	public Visual getVis() {
+		return vis;
+	}
+	public void setVis(Visual vis) {
+		this.vis = vis;
+	}
+
 }

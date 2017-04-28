@@ -24,7 +24,7 @@ public class Entity {
 	public Entity(int id,String name){
 		this.id=id;
 		this.name=name;
-		score=1;
+		this.score=1;
 	}
 	public int getType() {
 		return type;

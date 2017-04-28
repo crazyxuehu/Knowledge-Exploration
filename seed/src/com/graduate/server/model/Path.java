@@ -23,9 +23,10 @@ public class Path {
 		this.head=category;
 		relationList=(ArrayList<Relation>) list;
 	}
-	public Path(Relation relation, List<Entity> categoryList) {
+	public Path(Relation relation, Entity category, double score) {
 		this.relation=relation;
-		entityList=(ArrayList<Entity>) categoryList;
+		this.head=category;
+		this.score=score;
 	}
 	public Path(Entity headEntity) {
 		this.head=headEntity;
@@ -33,6 +34,7 @@ public class Path {
 		entityList = new ArrayList<>();
 		relationPath=new Stack<Relation>();
 		entityPath=new Stack<Entity>();
+		entityPath.add(headEntity);
 		score = 0;
 	}
 	public Path(Entity head, Stack<Relation> relationPath,
@@ -40,10 +42,12 @@ public class Path {
 		this.head=head;
 		this.relationPath=new Stack<Relation>();
 		this.entityPath=new Stack<Entity>();
-		for(int i=0;i<relationPath.size();i++){
+		int i;
+		for(i=0;i<relationPath.size();i++){
 			this.relationPath.add(relationPath.get(i));
 			this.entityPath.add(entityPath.get(i));
 		}
+		this.entityPath.add(entityPath.get(i));
 		this.score=score;
 	}
 	public Relation getRelation() {

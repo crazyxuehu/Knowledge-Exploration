@@ -23,19 +23,29 @@
 	height:20%;
 	width:90%;
 	margin-left:1%;
+	padding-top:3px;
+	padding-left:4px;
+	font-size:21px;
+	text-align:center;
 }
 .btn-result{
-	margin-top:10%;
-	width:80%;
-	height:70%;
-	font-size:30px;
+	margin-top:8%;
+	width:82%;
+	height:72%;
+	font-size:23px;
 }
 .btn-left{
+	text-align:left;
 	height:20%;
 	width:100%;
 	margin-top:5px;
+	padding-top:3px;
+	font-size:21px;
 }
 .btn-relation{
+	text-align:center;
+	padding-top:3px;
+	font-size:21px;
 	background-color:#ec971f;
 	color:#fff;
 	border-color:#ec971f;
@@ -61,9 +71,12 @@
 .btn-drag{
 	margin-right:5px;
 	margin-top:2px;
+	font-size:20px;
+	padding:2px 5px 3px 5px;
 }
 .row-size{
 	height:50%;
+	margin-top:0px;
 }
 .col-size{
 	height:100%;
@@ -259,4 +272,88 @@
 }
 .mui-switch.mui-switch-anim:checked:before {
  transition: left 0.3s;
+}
+
+ul.list{
+list-style:none;
+padding:0px;
+margin:0px;
+overflow:hidden;
+ position:float;
+}
+ul.list li{
+border:1px solid #EEE;
+width:391px;
+padding:1px 3px;
+margin-right:51px;
+margin-top:0;
+font-size:25px;
+font-family:Arial;
+text-overflow:ellipsis; 
+overflow:hidden;
+}
+.lilight{
+background-color:#fafafa;
+}
+.myhide{
+z-index:-100;
+opacity:0.5;
+}
+.myshow{
+z-index:20000;
+}
+.abstract{
+	padding-left: 8%;
+    padding-right: 22%;
+    padding-top: 2%;
+    font-size: 18px;
+    text-align: left;
+    font-family:cursive;
+	font-style:italic;
+}
+.dropdown-relation{
+	text-align:left;
+	padding-top:3px;
+	font-size:21px;
+	background-color:#ec971f;
+	color:#fff;
+	border-color:#ec971f;
+}
+.dropdown-list{
+	min-width:168px;
+	background-color:#fff;
+	color:#fff;
+	border-color:#ec971f;
+	padding:0;
+	margin:0;
+}
+.menu-item{
+	font-size:24px;
+	text-align:center;
+	background-color:#ec971f;
+	margin-bottom:2px;
+}
+.btn-more{
+	padding-top:2px;
+	padding-bottom:2px;
+	padding-left:4px;
+	padding-right:4px;
+}
+.label-head{
+	font-size:20px;
+	padding-left:20px;
+	padding-bottom:34px;
+	color:red;
+	/* //background-color:red; */
+}
+.label-tail{
+	font-size:20px;
+	padding-left:40px;
+	color:#ec971f;
+}
+.meta-select{
+	margin-top:0px;
+	padding:0;
+	width:30%;
+	height:30px;
 }

@@ -18,4 +18,6 @@ public interface SearchDao {
 
 	public void saveQuery(List<Entity> list);
 	public List getPopular();
+
+	public List getSearchAll(int num);
 }

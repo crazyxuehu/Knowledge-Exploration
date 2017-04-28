@@ -25,7 +25,7 @@ public class DataLoad extends HttpServlet{
 	public static int Entity_type=1;
 	public static int Error_type=-1;
 	public static int Out_Feature_Size=3;
-	public static int Out_Entity_Size=6;
+	public static int Out_Entity_Size=3;
 	public static int Out_Path_Size=30;
 	//数据集索引
 	public static HashMap<Integer, HashMap<Integer,HashMap<Integer, HashSet<Integer>>>> tripleHash = new HashMap<>();//原始数据集
@@ -42,6 +42,7 @@ public class DataLoad extends HttpServlet{
 		createTripleIndex();
 		createEntityVectorIndex();
 		createRelationVectorIndex();
+		//new IndexBuild();
 	}
 	public void createEntityIndex(){
 		String data="entity2id.txt";

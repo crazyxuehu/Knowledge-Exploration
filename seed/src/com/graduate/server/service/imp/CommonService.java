@@ -129,7 +129,7 @@ public class CommonService {
 							.map(e->DataUtil.getScoreofEntity(queryVector,DataUtil.getEntityVector(e),e))
 							.forEach(e->{
 								if(targetEntityMap.containsKey(e.getId())){
-									targetEntityMap.get(e.getId()).setScore(targetEntityMap.get(e.getId()).getScore());
+									targetEntityMap.get(e.getId()).setScore(targetEntityMap.get(e.getId()).getScore()+e.getScore());
 								}else{
 									targetEntityMap.put(e.getId(),e);
 								}
@@ -138,6 +138,17 @@ public class CommonService {
 			}
 		});
 		return new ArrayList<Entity>(targetEntityMap.values());
+	}
+	public static List<Entity> getTarget(Entity queryEntity,Relation relation){
+		if(DataUtil.JuRelationByEntity(relation.getDirection(),queryEntity.getId())){
+			if(DataUtil.JuRelationByRelation(relation.getDirection(),queryEntity.getId(),relation.getRelationId())){
+				return DataLoad.tripleHash.get(relation.getDirection()).get(queryEntity.getId())
+				.get(relation.getRelationId()).stream()
+				.map(id->DataUtil.getEntityById(id))
+				.collect(Collectors.toList());
+			}
+		}
+		return null;
 	}
 	//根据relation和查询实体获取相似实体
 	public static List<Entity> getTarget(Entity queryEntity,Relation relation,Entity targetEntity){
@@ -172,13 +183,13 @@ public class CommonService {
 	}
 	public static void test(List<Entity>list){
 		List<Entity> ll=RankEntity(list, 10);
-		for(Entity entity:ll){
+		/*for(Entity entity:ll){
 			System.out.println(entity.getId()+" "+entity.getScore());
-		}
+		}*/
 		ll=RankEntity(list, 15);
-		for(Entity entity:ll){
+		/*for(Entity entity:ll){
 			System.out.println(entity.getId()+" "+entity.getScore());
-		}
+		}*/
 	}
 	public static List<Entity>getCategory(List<Entity>queryList){
 		HashMap<Integer,Entity> categoryMap=new HashMap<Integer,Entity>();
@@ -208,9 +219,14 @@ public class CommonService {
 				if(DataUtil.JuRelationByRelation(0, entity.getId(), relationId)){
 					for(Integer category:DataLoad.tripleHash.get(0).get(entity.getId()).get(relationId)){
 						if(DataUtil.JuRelationByEntity(1,category)){
-							double score=DataLoad.tripleHash.get(1).get(category).values().size()/size;
+							double score=DataLoad.tripleHash.get(1).get(category).values().size()/(size*1.0);
+							//System.out.println("score1"+DataLoad.tripleHash.get(1).get(category).values().size()+" "+size);
 							score=-score*Math.log(score)*1;
+							//System.out.println("1//"+score);
+							score+=entity.getScore();
+							//System.out.println("2//"+score);
 							if(categoryMap.containsKey(category)){
+								//System.out.println("categorymap:"+categoryMap.get(category).getScore());
 								categoryMap.get(category).setScore(categoryMap.get(category).getScore()+score);
 							}else{
 								categoryMap.put(category,new Entity(category,score));
@@ -219,7 +235,7 @@ public class CommonService {
 					}
 				}
 			}else if(DataUtil.JuRelationByEntity(1,entity.getId())){
-				double score=DataLoad.tripleHash.get(1).get(entity.getId()).values().size()/size;
+				double score=DataLoad.tripleHash.get(1).get(entity.getId()).values().size()/(size*1.0);
 				score=-score*Math.log(score)*entity.getScore();
 				if(categoryMap.containsKey(entity.getId())){
 					categoryMap.get(entity.getId()).setScore(categoryMap.get(entity.getId()).getScore()+score);
@@ -244,5 +260,56 @@ public class CommonService {
 				}
 			}
 		return relationList;
+	}
+	public static Entity getCategory(Entity query){
+		HashMap<Integer,Entity> categoryMap=new HashMap<Integer,Entity>();
+		int min_size=Integer.MAX_VALUE;
+		int max_size=0;
+		int relationId=DataUtil.getRelationId("subject");
+			if(DataUtil.JuRelationByEntity(0,query.getId())){
+				if(DataUtil.JuRelationByRelation(0, query.getId(), relationId)){
+					for(Integer category:DataLoad.tripleHash.get(0).get(query.getId()).get(relationId)){
+						if(DataUtil.JuRelationByEntity(1,category)){
+							int size=DataLoad.tripleHash.get(1).get(category).values().size();
+							min_size=min_size>size?size:min_size;
+							max_size=max_size<size?size:max_size;
+						}
+					}
+				}
+			}else if(DataUtil.JuRelationByEntity(1,query.getId())){
+				int size=DataLoad.tripleHash.get(1).get(query.getId()).values().size();
+				min_size=min_size>size?size:min_size;
+				max_size=max_size<size?size:max_size;
+			}
+		int size=min_size+max_size;
+			if(DataUtil.JuRelationByEntity(0,query.getId())){
+				if(DataUtil.JuRelationByRelation(0, query.getId(), relationId)){
+					for(Integer category:DataLoad.tripleHash.get(0).get(query.getId()).get(relationId)){
+						if(DataUtil.JuRelationByEntity(1,category)){
+							double score=DataLoad.tripleHash.get(1).get(category).values().size()/(size*1.0);
+							//System.out.println("score1"+DataLoad.tripleHash.get(1).get(category).values().size()+" "+size);
+							score=-score*Math.log(score)*1;
+							//System.out.println("1//"+score);
+							score+=query.getScore();
+							//System.out.println("2//"+score);
+							if(categoryMap.containsKey(category)){
+								//System.out.println("categorymap:"+categoryMap.get(category).getScore());
+								categoryMap.get(category).setScore(categoryMap.get(category).getScore()+score);
+							}else{
+								categoryMap.put(category,new Entity(category,score));
+							}
+						}
+					}
+				}
+			}else if(DataUtil.JuRelationByEntity(1,query.getId())){
+				double score=DataLoad.tripleHash.get(1).get(query.getId()).values().size()/(size*1.0);
+				score=-score*Math.log(score)*query.getScore();
+				if(categoryMap.containsKey(query.getId())){
+					categoryMap.get(query.getId()).setScore(categoryMap.get(query.getId()).getScore()+score);
+				}else{
+					categoryMap.put(query.getId(),new Entity(query.getId(),score));
+				}
+			}
+		return RankEntity(new ArrayList<Entity>(categoryMap.values()), categoryMap.size()).get(0);
 	}
 }

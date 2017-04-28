@@ -64,13 +64,15 @@ public class SearchDaoImp extends BaseDao implements SearchDao {
 	@Override
 	public void saveQuery(List<Entity> list) {
 		for(Entity entity:list){
-			StringBuffer  sql=new StringBuffer();
-			sql.append("insert into xuehu.history values(historyid.nextval,?,?,' ',sysdate)");
-			try{
-			getJdbcTemplate().update(sql.toString(),new Object[]{entity.getId(),entity.getName()});
-			}catch(Exception e){
-				System.out.println(e.getMessage());
-				e.printStackTrace();
+			if(entity!=null){
+				StringBuffer  sql=new StringBuffer();
+				sql.append("insert into xuehu.history values(historyid.nextval,?,?,' ',sysdate)");
+				try{
+					getJdbcTemplate().update(sql.toString(),new Object[]{entity.getId(),entity.getName()});
+				}catch(Exception e){
+					System.out.println(e.getMessage());
+					e.printStackTrace();
+				}
 			}
 		}
 		
@@ -81,6 +83,15 @@ public class SearchDaoImp extends BaseDao implements SearchDao {
 		StringBuffer sql=new StringBuffer();
 		sql.append("select entityname from(select count(*) as num,entityname from xuehu.history");
 		sql.append(" group by entityname order by num desc) where rownum<4");
+		List<String>list=getJdbcTemplate().queryForList(sql.toString(),String.class);
+		return list;
+	}
+
+	@Override
+	public List getSearchAll(int num) {
+		StringBuffer sql=new StringBuffer();
+		sql.append("select entityname from(select count(*) as num,entityname from xuehu.history");
+		sql.append(" group by entityname order by num desc) where rownum<"+num);
 		List<String>list=getJdbcTemplate().queryForList(sql.toString(),String.class);
 		return list;
 	}
