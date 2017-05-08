@@ -29,13 +29,15 @@
 	text-align:center;
 }
 .btn-result{
-	margin-top:8%;
-	width:82%;
-	height:72%;
+	margin-top:2%;
+	width:90%;
+	height:59%;
 	font-size:23px;
+	margin-left:5%;
+	display:none;
 }
 .btn-left{
-	text-align:left;
+	text-align:center;
 	height:20%;
 	width:100%;
 	margin-top:5px;
@@ -75,6 +77,10 @@
 	padding:2px 5px 3px 5px;
 }
 .row-size{
+	height:35%;
+	margin-top:0px;
+}
+.row-sizeleft{
 	height:50%;
 	margin-top:0px;
 }
@@ -275,6 +281,7 @@
 }
 
 ul.list{
+z-index:100;
 list-style:none;
 padding:0px;
 margin:0px;
@@ -282,6 +289,7 @@ overflow:hidden;
  position:float;
 }
 ul.list li{
+z-index:100;
 border:1px solid #EEE;
 width:391px;
 padding:1px 3px;
@@ -303,8 +311,8 @@ opacity:0.5;
 z-index:20000;
 }
 .abstract{
-	padding-left: 8%;
-    padding-right: 22%;
+	padding-left: 0%;
+    padding-right: 5%;
     padding-top: 2%;
     font-size: 18px;
     text-align: left;
@@ -348,7 +356,7 @@ z-index:20000;
 }
 .label-tail{
 	font-size:20px;
-	padding-left:40px;
+	padding-left:20px;
 	color:#ec971f;
 }
 .meta-select{
@@ -356,4 +364,24 @@ z-index:20000;
 	padding:0;
 	width:30%;
 	height:30px;
+}
+.item-left{}
+.item-right{}
+.select-font{
+	font-size:20px;
+}
+.btn-icon-right i{
+	padding-left:0em;
+}
+.on{};
+.btn-category{};
+.btn-test{};
+.font-bold{
+	font-weight:bold;
+}
+.menu-list{
+	
+}
+.list-select{
+	color:#A09D9D;
 }

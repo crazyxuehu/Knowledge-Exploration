@@ -61,6 +61,9 @@ function dragula (containers, options) {
     }
     var item = e.target;
     var factor=item;
+    if(factor.childElementCount!=2){
+    	return;
+    }
     if (containers.indexOf(item) !== -1) {
       return; // don't drag container itself
     }
@@ -76,6 +79,7 @@ function dragula (containers, options) {
     if (invalidTarget(item)) {
       return;
     }
+   
     var container = item.parentElement;
     item=factor;
     var movable = o.moves(item, container);
@@ -95,7 +99,8 @@ function dragula (containers, options) {
       _copy.id=_copy.id+"_";
       rmClass(_copy,'btn-size');//移除原有的样式效果，使之与新容器一致
       rmClass(_copy,'btn-result');
-     // debugger
+      rmClass(_copy.children[1],'btn-category');
+      rmClass(_copy.children[1],'on');
       rmClass(_copy,'btn-left');
       addClass(_copy,'gu-transit btn-drag');
     } else {
@@ -116,7 +121,7 @@ function dragula (containers, options) {
   function invalidTarget (el) {
 	 // debugger;
 	  console.log(el.tagName);
-    return el.tagName==="IMG"||el.tagName==="SPAN";
+    return el.tagName==="IMG"||el.tagName==="SPAN"||el.tagName==="LI"||el.tagName==="UL";
   }
 
   function end () {
@@ -266,9 +271,12 @@ function dragula (containers, options) {
   }
 
   function removeMirrorImage () {
-    if (_mirror) {
+    if (_mirror!==null) {
+    	//console.log(body);
+    	//console.log(_mirror);
       rmClass(body, 'gu-unselectable');
       touchy(documentElement, 'remove', 'mousemove', drag);
+      if(_mirror.parentElement)
       _mirror.parentElement.removeChild(_mirror);
       _mirror = null;
       _dragging = false;
@@ -388,7 +396,9 @@ function addClass (el, className) {
 }
 
 function rmClass (el, className) {
+	//console.log(el.className+" "+className);
   el.className = el.className.replace(new RegExp(' ' + className, 'g'), '');
+  //console.log(el.className);
 }
 
 function getCoord (coord, e) {

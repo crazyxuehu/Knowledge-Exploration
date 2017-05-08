@@ -1,9 +1,15 @@
 define(function(require){
 	require("jquery");
+///	require("./js/bootstrap");
+	//require("css!./css/bootstrap").load();
 	require("css!./css/dragula").load();
 	require("css!./css/swiper.min").load();
+	require("css!./css/jquery-ui.css").load();
+	require("./js/jquery-ui");
 	require("./js/swiper.min");
+	require("./js/dragula");
 	var array = require("$UI/system/lib/base/array");
+	var Button = require("$UI/system/components/justep/button/button");
 	
 	var justep = require("$UI/system/lib/justep");
 	var Model = function(){
@@ -28,14 +34,28 @@ define(function(require){
 		 this.relationPath={};
 		 this.categoryPath={};
 		 this.simEntityMap={};
+		 this.currentQuery;
+		 this.relationmapleft={};
+		 this.relationmapright={};
+		 this.flag=false;
 		 //this.visdom;
 		// var urlMap={};
 		// console.log(123);
 		var me=this;
+		$('#inputdata').on('click',function(){
+		//debugger
+			$('#inputdata').val('');
+		});
+		$('#inputdata').on('focus',function(){
+		//debugger
+			$('#inputdata').val('');
+		});
 		 $('#inputdata').bind('input propertychange',function(){//给input控件添加监听函数
+			// debugger
 			 var query=$(this).val();
-			 if(query.length>0){
+			 if(query.length>0&&query!=''){
 			 //console.log(query);
+			 var dom=$(this);
 			 dx.ajax({
 				url:"http://localhost:8080/seed/test",
 				data:{query:query},
@@ -55,19 +75,19 @@ define(function(require){
 			 });
 			 }
 		 });
+		// debugger
+		
+		
 	};
+	var me=this;
 	Model.prototype.autoComplete=function(event){//自动补全功能
-				//debugger
+				var me=this;
 				$("ul.list").empty();
 				for(var i=0;i<event.length;i++){
 				var liElement=$('<li class="autoli"><span class="ex">'+event[i]+'</span></li>")');
 				liElement.appendTo("ul.list");
 				}
 				//首先让list隐藏起来
-				$("ul.list").hide();
-				$("#inputdata").keyup(function(event){
-				//如果输入的值不是空或者不以空格开头
-				if($.trim($(this).val())!==""){
 					$("ul.list").show();
 					//如果当前有已经高亮的下拉选项卡，那么将其移除
 					if($("ul.list li:visible").hasClass("lilight")){
@@ -78,13 +98,6 @@ define(function(require){
 						$("ul.list li:visible:eq(0)").addClass("lilight");
 					}
 					$('#bom').hide();
-					
-				}else{
-				//否则不进行显示
-				$("ul.list").hide();
-				$("ul.list li").removeClass("lilight");
-				}
-				});
 				$("ul.list li").focus(function(){
 					if($("ul.list li:visible").hasClass("lilight")){
 						$("ul.list li").removeClass("lilight");
@@ -93,9 +106,23 @@ define(function(require){
 				});
 				//当鼠标点击某个下拉项时，选中该项，下拉列表隐藏
 				$("ul.list li").click(function(){
-					$("#inputdata").val($(this).text());
+					//$("#inputdata").val($(this).text());
+					//var value=$(this)
+					var parNode=me.getElementByXid("btncontainer");
+					if(parNode){
+						var flag={
+						xid:"Query1",
+						label:$(this).text(),
+						parentNode:parNode,
+						'class':'btn btn-success btn-drag'
+						};
+						//debugger
+						new Button(flag);
+					}
 					$("ul.list").hide();
 					$('#bom').show();
+					$("#inputdata").get(0).value='';
+					console.log($('#inputdata').val())
 				});
 				//当鼠标划过某个下拉项时，选中该项，下拉列表隐藏
 				$("ul.list li").hover(function(){
@@ -105,6 +132,7 @@ define(function(require){
 				});
 				//当鼠标点击其他位置，下拉列表隐藏
 				$(document).click(function(){
+					$('#inputdata').get(0).value='';
 					$("ul.list").hide();
 					$('#bom').show();
 				}); 
@@ -128,7 +156,7 @@ define(function(require){
 		 this.simEntity=null;
 		 this.relationPath={};
 		 this.categoryPath={};
-		 this.createIndex();
+		this.createIndex();
 		this.swiper = new Swiper('.swiper-container', {
 		pagination: '.swiper-pagination',
         effect: 'cube',
@@ -139,14 +167,23 @@ define(function(require){
         paginationCustomRender: function (swiper, current, total) {
         	if(me.imgmap.hasOwnProperty(current)){
 	        	var data=me.comp("resultdata").find(['ID'],[me.imgmap[current]]);
-				var btn=me.comp("buttonswip");
 				var desc=$('#desc');
 				if(data.length>0){
-					btn.set({
-					"label":data[0].val('ENAME')
-					});
+					var query=data[0].val("ENAME");
+					me.currentQuery=query;
 					desc.empty();
-					desc.append(data[0].val('DESC').substr(0,65)+"...");
+					$('#entityName').empty();
+					$('#entityName').append(query);
+					$('#link').attr('href',"http://en.wikipedia.org/w/index.php?search="+data[0].val("ENAME"));
+					if(query.length<5){
+						if(data[0].val('DESC').length<150){
+							desc.append(data[0].val('DESC'));
+						}else{
+							desc.append(data[0].val('DESC').substr(0,150)+"...");
+						}
+					}else{
+						desc.append(data[0].val('DESC').substr(0,100)+"...");
+					}
 					if(total>1&&this.featurecount==this.count){
 						console.log("pagination serch");
 							me.createFeature(me.imgmap[current]);
@@ -156,29 +193,76 @@ define(function(require){
 			return current+"/"+total;
 		},
     });
-	/*	var dom1=this.getElementByXid("relaEx");//获取容器实现数据可视化
-		var dom2=this.getElementByXid("metapath");
-		var desc1="Relation Explaination";
-		var desc2="Meta Path Explainaion";
-		this.DataVisual(dom1, desc1);//调用数据可视化函数，主要是通过Echarts控件实现
-		this.MetaPathVisual(dom2,'relation',1,'category',0);*/
+	/*	var swipArray=[];
+		var content='<div class="swiper-slide"><img src="./img/1.jpg';
+		var doc='" class="img-rounded" style="height:100%;width:100%;"></img></div>';
+		swipArray.push(content+doc);
+		this.swiper.appendSlide(swipArray);
+		this.swiper.updateSlidesSize();
+		this.swiper.updatePagination();
+		this.swiper.updateClasses();*/
 		var container=this.getElementByXid("btncontainer");//实现对应容器的控件拖拽事件
+		//var container=$(dom);
 		var dragfactor0=this.getElementByXid("drag2");
 		var dragfactor1=this.getElementByXid("drag1");
-		var dragfactor2=this.getElementByXid("drag3");
 		var drag=require("./js/dragula");
 		drag([container],{removeOnSpill:true});//搜索区域拖拽删除
 		drag([dragfactor0,container],{copy:true});//费搜索区域复制拖拽
 		drag([dragfactor1,container],{copy:true});
-		drag([dragfactor2,container],{copy:true});
+		$(document).on('touchstart','.btn-category',function(){
+			$(this).addClass("on");
+			$(this).tooltip({
+				items:'.btn-category.on',
+				position:{my:"left+15 center",at:"right center"},
+				content:function(callback){
+					var query=$(this).get(0).innerText;
+					//console.log(query);
+					$.ajax({
+						url:"http://localhost:8080/seed/getcategory",
+						data:query,
+						type:"POST",
+						dataType:'json',
+						contentType:'application/json',
+						success:function(result,status){
+							var doc='<ul class="ui-menu">'
+							doc+='<li class="ui-menu-item" style="color:#73A839;">'+query+'</li>';
+							console.log(result.length);
+							for(var i=0;i<result.length;i++){
+								doc+='<li class="ui-menu-item" style="color:#033c73;">'+result[i]['name']+'</li>';
+							}
+							console.log(doc);
+							doc+='</ul>';
+							callback(doc);
+						},
+						error:function(er,status){
+							alert(status);
+						}
+					});
+				}
+			});
+			$(this).tooltip("open");
+		});
+		$(document).on('touchend','.btn-category.on',function(){
+			$(this).tooltip('close');
+			$(this).removeClass('on');
+		});
+		$(document).on('click','.btn-drag',function(){
+			if($(this)!=null){
+				$(this).remove();
+			}
+		});
+		$(document).on('click','.menu-list',function(){
+			me.createQuery($(this).text());
+			$(this).addClass("list-select");
+		});
 		this.MenuSlide();
+		//this.createIndex();
 	};
 	Model.prototype.createIndex=function(event){
-		var uuid='user';
 		var me=this;
 		$.ajax({
 				url:"http://localhost:8080/seed/getIndex",
-				data:JSON.stringify(uuid),
+				data:{},
 				type:"POST",
 				dataType:'json',
 				contentType:'application/json',
@@ -192,26 +276,29 @@ define(function(require){
 					data.deleteAllData();
 					//debugger
 					var list=new Array();
-					for(var i=0;i<entityList.length;i++){
-						me.getImageURL(entityList[i]["name"],i+1,1);
-						list.push(entityList[i]["name"]);
+					list.push(entityList[0]);
+					var query=new Array();
+					/*for(var i=1;i<entityList.length;i++){
+						me.createQuery(entityList[i]['name']);
+					}*/
+					for(var i=0;i<list.length;i++){
+						me.getImageURL(list[i]["name"],i+1,1);
+						query.push(list[i]["name"]);
 					}
-					 me.getSearchResult(entityList,featureList);
-					 me.query=list;
+					 me.getSearchResult(list,featureList);
+					 me.query=query;
 					//simentity
 					data=me.comp("simdata");
 					data.directDeleteMode=true;
 					data.confirmDelete=false;
 					data.deleteAllData();
 					//debugger
-					var simlist=result['simEntityList']['simEntityList'];
-					var categorylist=result['simEntityList']['simCategoryList'];
+					var simlist=result['simEntityList'];
 					me.simcount=simlist.length;
 					var list=new Array();
 					for(var i=0;i<simlist.length;i++){
 						me.getImageURL(simlist[i]['name'],i+1,2);
 						list.push(simlist[i]['name']);
-						me.simEntityMap[simlist[i]['name']]=categorylist[i]['name'];
 					}
 					//me.Visualization(query,result);
 					me.simEntity=list;
@@ -229,36 +316,29 @@ define(function(require){
 					}
 					
 					//metaPath
-					var meta=result['metaPathList'];
-					var dom1=me.getElementByXid("metapath");//获取容器实现数据可视化
-				    var category=meta[0]['category']['name'];
-				    var relation=meta[0]['relation']['name'];
-				    var type=meta[0]['type'];
-				    var re=1;
-				    var ca=0;
-				    if(type==0){
-				    	me.MetaPathVisual(dom1,relation,re,category,ca);
-				    }else{
-				    	me.MetaPathVisual(dom1,category,ca,relation,re);
-				    }
-				    for(var i=0;i<meta.length;i++){
-				    	if(meta[i]['type']==0){
-				    		me.relationPath[meta[i]['relation']['name']]=meta[i]['category']['name'];
-				    	}else{
-				    		me.categoryPath[meta[i]['category']['name']]=meta[i]['relation']['name'];
-				    	}
-				    }
-				      me.createMetaPathSelect();
-				    //search path
-				    dom1=me.getElementByXid("relaEx");
-				    var desc1="Search history";
-				    var data=result['vis']['nodeList'];
-				    var links=result['vis']['linkList'];
-				   // debugger
-				    me.data=data;
-				    me.link=links;
-				   	me.DataVisual(dom1, desc1,data,links,100,50);//调用数据可视化函数，主要是通过Echarts控件实现
+				    me.relationPath={};
+				    me.categoryPath={};
+				    var metapath=result['metaPathList'];
+				    for(var key in metapath['category']){
+				    	me.categoryPath[key]=metapath['category'][key];
+				   	}
+				   	for(var key in metapath['relation']){
+				   		me.relationPath[key]=metapath['relation'][key];
+				   	}
+				    me.createMetaPathSelect();
 				   	console.log("visulization");
+				    //search path
+				    var vis=result['vis'];
+				    var dom1=me.getElementByXid("viscontainer");
+				    var repnum=1000;
+				    var size=80;
+				    var desc1="Relation Explaination";
+				    var vdata=vis['nodeList'];
+				    var vlink=vis['linkList'];
+				    me.data=vdata;
+				    me.link=vlink;
+				   	console.log("Relation visulization");
+				   // debugger
 				},
 				error:function(er,status){
 					console.log(er.responseText);
@@ -270,14 +350,9 @@ define(function(require){
       var myCharts=echarts.init(dom);
     //  debugger
     //  var dialog=this.comp('dialog');
-    var edgelength=40;
+    var edgelength=100;
     var gravity=0.1;
-    var flag=false;
-    if(repulnum==1000){
-    	edgelength=80;
-    	gravity=0.2;
-    	flag=true;
-    }
+    var flag=true;
       var option = {
       title:{
     	  show:true,
@@ -302,11 +377,11 @@ define(function(require){
     	feature:{
     		restore:{show:true}
     	},
-    	right:170
+    	right:340
     },
     legend: {
         x: "right",
-        data: ["Category", "Entity"],
+        data: ["Category", "Entity","Query","Similar"],
         formatter:function(name){
         	return echarts.format.truncateText(name, 120, '25px bolder Times New Roman', '…');
         }
@@ -329,7 +404,7 @@ define(function(require){
             }
            },
            {
-           name:'Start',
+           name:'Query',
            itemStyle:{
         	   normal:{
         		  
@@ -337,7 +412,7 @@ define(function(require){
            }
            }, 
            {
-           name:'Target',
+           name:'Similar',
            itemStyle:{
         	   normal:{
         		  color: "#EC971F", 
@@ -376,7 +451,7 @@ define(function(require){
                 show: true
             },
             textStyle: {
-               fontSize: 20
+               fontSize: 25
             }
         },
         force: {
@@ -424,7 +499,7 @@ define(function(require){
     },
     legend: {
         x: "right",
-        data: ["Category", "Entity","Start","Target"],
+        data: ["Category", "Entity","Query","Similar"],
         formatter:function(name){
         	return echarts.format.truncateText(name,120,'25px Times New Roman', '…');
         }
@@ -447,7 +522,7 @@ define(function(require){
             }
            },
            {
-           name:'Start',
+           name:'Query',
            itemStyle:{
         	   normal:{
         		  
@@ -455,7 +530,7 @@ define(function(require){
            }
            }, 
            {
-           name:'Target',
+           name:'Similar',
            itemStyle:{
         	   normal:{
         		  color: "#EC971F", 
@@ -505,13 +580,29 @@ define(function(require){
 };
       myCharts.setOption(option);  
 };
-Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
+Model.prototype.MetaPathVisual = function(dom,desc,result,type){
 	//debugger
       var echarts=require('./js/echarts');
       var myCharts=echarts.init(dom);
+      var data=null;
+      var link=null;
+      if(!type){
+       data=result['nodeList'];
+       link=result['linkList'];
+      }else{
+    	  data=result;
+    	  link=type;
+      }
       var option = {
       title:{
-    	  show:false,
+    	  show:true,
+    	  text:desc,
+    	  textStyle:{
+    		  color:'gray',
+		      fontStyle:'italic',
+		      fontWeight:'bolder',
+		      fontSize:20
+    	  },
     	  
       },
     tooltip: {
@@ -521,8 +612,8 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
     	  }
     },
     legend: {
-        x: "left",
-        data: ["Category", "Relation"],
+        x: "right",
+        data: ["Category", "Relation","Query"],
         formatter:function(name){
         	return echarts.format.truncateText(name,120,'25px Times New Roman', '…');
         }
@@ -531,7 +622,7 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
     label:{
     	normal:{
     		show:true,
-    		position:'inside',
+    		position:'insideLeft',
     		textStyle:{
     			fontWeight:'bold',
     			fontSize:25
@@ -554,21 +645,28 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
         		  color: "#EC971F", 
         	   }
            }
-        }],
+        },
+        	{
+        	name:'Query',
+        	itemStyle:{
+        		normal:{
+        		}
+        	}
+        }
+        ],
         type: 'graph',
-        layout: 'none',
-       // symbol: "triangle",
-       // symbolRotate:270,
-        symbolSize: [140,60],
-        hoverAnimation:false,
-        roam: false, //禁止用鼠标滚轮缩小放大效果
+        layout: 'force',
+        symbol: "circle",
+        symbolSize: 100,
+        hoverAnimation:true,
+        scale: true, //禁止用鼠标滚轮缩小放大效果
         edgeSymbol: ['circle', 'arrow'],
-        edgeSymbolSize: [0,10],
+        edgeSymbolSize: [0, 10],
         // 连接线上的文字
         focusNodeAdjacency: false, //划过只显示对应关系
         edgeLabel: {
             normal: {
-                show: true,
+                show:true,
                 textStyle: {
                     fontSize: 20
                 },
@@ -584,60 +682,22 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
         },
         // 圆圈内的文字
         label: {
-            normal:{
-    		show:true,
-    		position:'inside',
-    		textStyle:{
-    			fontWeight:'bold',
-    			fontSize:25
-    		}
-    	}
+            normal: {
+                show: true
+            },
+            textStyle: {
+               fontSize: 20
+            }
         },
-        data:[
-        {
-        	name:'query',
-        	x:0,
-        	y:500,
-        	symbol:'circle',
-        	symbolSize:[200,60]
+        force: {
+            repulsion:500,
+            gravity:0.1,
+            edgeLength:220,
+            layoutAnimation:true
         },
-        {
-        	name:head,
-        	x:100,
-        	y:500,
-        	category:catehead,
-        	symbol:'diamond',
-        	symbolSize:[200,60],
-        },{
-        	name:tail,
-        	x:200,
-        	y:500,
-        	category:catetail,
-        	symbol:'roundRect',
-        	symbolSize:[200,60],
-        	label: {
-	            normal:{
-		    		show:true,
-		    		position:'inside',
-		    		textStyle:{
-		    			fontWeight:'bold',
-		    			fontSize:25
-		    		}
-	            }
-        	}
-        	
-        }
-        ],
-        link:[]
-        /*[{
-        	source:head,
-        	target:tail,
-        },
-        {
-        	source:'query',
-        	target:head,
-        }]*/
-    }],
+        data: data,
+        links:link
+    }]
     /*left:0,
     right:0*/
 };
@@ -702,14 +762,14 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 		 this.imgcount=0;
 		 this.featurecount=0;
 		 this.visflag=false;
+		 this.flag=false;
 	     var Reldom=$('#checkRelation');
 	     var Typdom=$('#checkType');
 	     Reldom.attr('checked',true);
 	     Typdom.attr('checked',true);
 	    var dom=this.comp("btncontainer");
 		var n=dom.domNode.childElementCount;
-		var indom=$('#inputdata');
-		if(indom.val()===""&&n===0){
+		if(n===0){
 			return;
 		}
 	    var shbtn=this.comp("Qbtn");
@@ -728,14 +788,15 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 			"Ename":zz
 			}]);
 		}
-		query.push(indom.val());
-		array.merge(deArray,[{"id":justep.UUID,"Qname":label,"Ename":indom.val()}]);
+		//query.push(indom.val());
+		//array.merge(deArray,[{"id":justep.UUID,"Qname":label,"Ename":indom.val()}]);
+		$('.menu-list').removeClass("list-select");
 		this.query=query;
 		this.searchdataNew(deArray);
 		this.resultLoad(query);
 		this.recommendLoad(query);
 		this.createMetaPath(query);
-		//this.Visualization(query);
+		this.Visualization(query);
 	};
 	Model.prototype.searchdataNew = function(event){
 	//debugger
@@ -754,7 +815,7 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 	        $(btn).appendTo(parNode);
 			var content="<div id='"+label+"' class='collapse'><ul>";
 			for(i=0;i<enArray.length;i++){
-				content=content+"<li>"+enArray[i]+"</li>";
+				content=content+"<li class='menu-list'>"+enArray[i]+"</li>";
 			}
 			content=content+"</ul></div>";
 			$(content).appendTo(parNode);
@@ -786,7 +847,10 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 		//debugger 
 		var me=this;
 		this.getTitle(query).success(function(data){
-			var desc=data[2][0];
+			var desc='';
+			if(data[2][0]){
+				desc=data[2][0];
+			}
 			me.getImage(data[1][0]).success(function(data){
 		    	var pages = data.query.pages;
 				for (var page in pages) {
@@ -794,6 +858,7 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 					//debugger
 						var pdata = pages[page];
 						if(pdata.thumbnail&&pdata.thumbnail.original){
+							//console.log("img: "+pdata);
 							if(type==1){
 								me.createResult(query,pdata.thumbnail.original,desc,num);
 							}else if(type==2){
@@ -801,6 +866,7 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 							}
 						}
 						else{
+								//console.log(pdata);
 								var url="http://www.ehypermart.in/0/images/frontend/image-not-found.png";
 								if(type==1){
 									me.createResult(query,url,desc,num,me);
@@ -859,16 +925,16 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 			var me=this;
 			simdata.each(function(params){
 				if(count==0){
-					var target=params.row.val('TARGET');
-					var url=params.row.val('FNAME');
-					var type=me.simEntityMap[target];
-					content+=me.createSimRow('Type',target,url,type);
-					count++;
+						var target=params.row.val('TARGET');
+						var url=params.row.val('FNAME');
+						var type=me.simEntityMap[target];
+						content+=me.createSimRow('Type',target,url,type);
+						count++;
 				}else{
 					var target=params.row.val('TARGET');
 					var url=params.row.val('FNAME');
 					var type=me.simEntityMap[target];
-					content+=me.createSimCol(target,url,type);
+					content+=me.createSimCol(target,url);
 					count++;
 					if(count==3){
 						parNode.append(content);
@@ -876,25 +942,34 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 						count=0;
 					}
 				}
-				
 			});
 			console.log("recommend");
+			if(this.flag==true){
+				console.log("create 2");
+				this.createSimFeature();
+				this.flag=false;
+			}
 		};
 		Model.prototype.createSimRow=function(type,name,url,tag){
 			var content='';
 			var row='<div component="$UI/system/components/justep/row/row" class="x-row row-size" xid="row19">';
 			var col='<div class="x-col col-size" xid="col43">';
 			if(type=='Type'){
-				content='<div component="$UI/system/components/justep/button/button" class="btn btn-info btn-size" ';
-				content=content+'label="'+tag+'" xid="button30"><i></i><span>'+tag+'</span></div>';
-			}else{
+				content='<div xid="123" class="btn  btn-size"></div>';
+			}else if(type=='Relation'){
 				content='<div component="$UI/system/components/justep/button/button" class="btn btn-size btn-relation" ';
 				content=content+'label="'+tag+'" xid="button30"><i></i><span>'+tag+'</span></div>';
+			}else{
+				content+=' <div class="dropdown btn-group" component="$UI/system/components/bootstrap/dropdown/dropdown" xid="dropdown1" style="width:109%;margin-left:3%;">';
+				content+=' <a component="$UI/system/components/justep/button/button" class="btn btn-size dropdown-relation btn-icon-right dropdown-toggle"';
+				content+='label="'+tag+'" icon="icon-arrow-down-b" xid="button1" data-toggle="dropdown">';
+				content+='<i class="icon-arrow-down-b" xid="i2"></i><span xid="span2">'+tag+'</span></a>';
+				content+='<ul component="$UI/system/components/justep/menu/menu" class="dropdown-list dropdown-menu" id="dropmenuright"></ul></div>';
 			}
 			var img='<img src="'+url;
 			img+='" xid="image15" class="img-rounded img-size img-right-size"></img>';
-			var btn='<div component="$UI/system/components/justep/button/button" class="btn btn-success btn-size"';
-			btn=btn+'label="'+name+'" xid="button27"><i></i><span>'+name;
+			var btn='<div component="$UI/system/components/justep/button/button" class="btn btn-success btn-size "';
+			btn=btn+'label="'+name+'" xid="button27"><i></i><span class="btn-test btn-category">'+name;
 			btn=btn+'</span></div> </div>';
 			return row+col+content+img+btn;
 		};
@@ -905,8 +980,8 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 				content=content+'label="'+type+'" xid="button30"><i></i><span>'+type+'</span></div>';
 				var img='<img src="'+url;
 				img+='" xid="image15" class="img-rounded img-size img-right-size"></img>';
-				var btn='<div component="$UI/system/components/justep/button/button" class="btn btn-success btn-size"';
-				btn=btn+'label="'+name+'" xid="button27"><i></i><span>'+name;
+				var btn='<div component="$UI/system/components/justep/button/button" class="btn btn-success btn-size "';
+				btn=btn+'label="'+name+'" xid="button27"><i></i><span class="btn-test btn-category">'+name;
 				btn=btn+'</span></div> </div>';
 				return col+content+img+btn;
 			}else{
@@ -914,8 +989,8 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 				var content='<div xid="rtdiv" class="btn-size"></div>';
 				var img='<img src="'+url;
 				img+='" xid="image15" class="img-rounded img-size img-right-size"></img>';
-				var btn='<div component="$UI/system/components/justep/button/button" class="btn btn-success btn-size"';
-				btn=btn+'label="'+name+'" xid="button27"><i></i><span>'+name;
+				var btn='<div component="$UI/system/components/justep/button/button" class="btn btn-success btn-size "';
+				btn=btn+'label="'+name+'" xid="button27"><i></i><span class="btn-test btn-category">'+name;
 				btn=btn+'</span></div> </div>';
 				return col+content+img+btn;
 			}
@@ -932,6 +1007,8 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 				}
 			});
 			if(this.featurefact==this.simfeaturecount){
+				this.flag=true;
+				console.log("create 1");
 				this.createSimFeature();
 			}
 		};
@@ -963,7 +1040,7 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 					if (pages.hasOwnProperty(page)) {
 						var pdata = pages[page];
 						if(pdata.thumbnail&&pdata.thumbnail.original){
-							//console.log(num);
+							//console.log("img: "+pdata);
 							if(type==1){
 								me.createFeatureResult(id,relation,target,pdata.thumbnail.original,num);
 							}else{
@@ -973,7 +1050,7 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 						}
 						else{
 								var url="http://www.ehypermart.in/0/images/frontend/image-not-found.png";
-								//console.log(num);
+								//console.log(pdata);
 								if(type==1){
 									me.createFeatureResult(id,relation,target,url,num);
 								}else{
@@ -1013,15 +1090,24 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 				//feature.push({"QID":id,"RELATION":featureList[j]['relation']['name'],"TARGET":featureList[j]['query']['target']['name'],"ID":j+1});
 			}
 		};
-		Model.prototype.createFeatureRow=function(entity,relation,fname){
-			var row='<div  class="x-row row-size" xid="222">';
+		Model.prototype.createFeatureRow=function(entity,relation,fname,type){
+			var row='<div  class="x-row row-sizeleft" xid="222">';
 			var col='<div class="x-col col-size" xid="333">';
-			var content='<a component="$UI/system/components/justep/button/button" class="btn btn-left btn-relation" ';
-			content=content+'label="'+relation+'" xid="button30"><i></i><span>'+relation+'</span></a>';
+			var content='';
+			if(type==1){
+			    content+=' <div class="dropdown btn-group" component="$UI/system/components/bootstrap/dropdown/dropdown" xid="dropdown1" style="width:100%">';
+				content+=' <a component="$UI/system/components/justep/button/button" class="btn dropdown-relation btn-left btn-icon-right dropdown-toggle"';
+				content+='label="'+relation+'" icon="icon-arrow-down-b" xid="button1" data-toggle="dropdown">';
+				content+='<i class="icon-arrow-down-b" xid="i2"></i><span xid="span2">'+relation+'</span></a>';
+				content+='<ul component="$UI/system/components/justep/menu/menu" class="dropdown-list dropdown-menu" id="dropmenu"></ul></div>';
+			}else{
+				content='<a component="$UI/system/components/justep/button/button" class="btn btn-left btn-relation" ';
+				content=content+'label="'+relation+'" xid="button30"><i></i><span>'+relation+'</span></a>';
+			}
 				var img='<img src="';
 				img=img+fname+'" xid="image15" class="img-rounded img-left-size"></img>';
-				var btn='<a component="$UI/system/components/justep/button/button" class="btn btn-success btn-left"';
-				btn=btn+'label="'+entity+'" xid="button27"><i></i><span>'+entity;
+				var btn='<a component="$UI/system/components/justep/button/button" class="btn btn-success btn-left "';
+				btn=btn+'label="'+entity+'" xid="button27"><i></i><span class="btn-test btn-category">'+entity;
 				btn=btn+'</span></a> </div>';
 			   return row+col+content+img+btn;
 		};
@@ -1030,8 +1116,8 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 				var col='<div class="x-col col-size" xid="333"><div xid="fid" class="btn-left"></div>';
 				var img='<img src="';
 				img=img+fname+'" xid="image15" class="img-rounded img-left-size"></img>';
-				var btn='<a component="$UI/system/components/justep/button/button" class="btn btn-success btn-left"';
-				btn=btn+'label="'+entity+'" xid="button27"><i></i><span>'+entity;
+				var btn='<a component="$UI/system/components/justep/button/button" class="btn btn-success btn-left "';
+				btn=btn+'label="'+entity+'" xid="button27"><i></i><span class="btn-test btn-category">'+entity;
 				btn=btn+'</span></a></div>';
 				return col+img+btn;
 		};
@@ -1042,8 +1128,8 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 				content=content+'label="'+relation+'" xid="button30"><i></i><span>'+relation+'</span></a>';
 				var img='<img src="';
 				img=img+fname+'" xid="image15" class="img-rounded img-left-size"></img>';
-				var btn='<a component="$UI/system/components/justep/button/button" class="btn btn-success btn-left"';
-				btn=btn+'label="'+entity+'" xid="button27"><i></i><span>'+entity;
+				var btn='<a component="$UI/system/components/justep/button/button" class="btn btn-success btn-left "';
+				btn=btn+'label="'+entity+'" xid="button27"><i></i><span class="btn-test btn-category">'+entity;
 				btn=btn+'</span></a></div>';
 				return col+content+img+btn;
 		};
@@ -1051,35 +1137,45 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 		//debugger;
 			var flag=0;
 			var data=null;
-			if(category&&category!="Relation"){
+			if(category&&category!="all"){
 				flag=1;
 				data=this.comp("featuredata").find(['QID','RELATION'],[num,category]);
 			}else{
 				data=this.comp("featuredata").find(['QID'],[num]);
 			}
-			var dom=$('#leftcontainer');
+			var dom=$("#leftcontainer");
 			dom.empty();
+			//dom.clear();
 			//console.log("clear now!");
 			//debugger
 			var count=0;
 			var content='';
 			//debugger
 			var map={};
-			var relationmap={};
 			//console.log("relation");
+			if(flag==0) this.relationmapleft={};
 			for(var i=0;i<data.length;i++){
 				//console.log(data[i].val('RELATION'));
 				map[this.featuremap[data[i].val('ID')]]=data[i];
-				relationmap[data[i].val('RELATION')]=1;
+				if(flag==0){
+					this.relationmapleft[data[i].val('RELATION')]=1;
+				}
 			}
 			var pre=null;
 			var count=0;
 			var content='';
+			var tag=0;
 			for(var key in map){
 				if(count===0){
-					content+=this.createFeatureRow(map[key].val('TARGET'),map[key].val('RELATION'),map[key].val('FNAME'));
-				   //console.log(data[i].val('RELATION')+":"+data[i].val('TARGET'));
-					count++;
+					if(tag==0){
+						content+=this.createFeatureRow(map[key].val('TARGET'),map[key].val('RELATION'),map[key].val('FNAME'),1);
+						tag++;
+						count++;
+					}else{
+						content+=this.createFeatureRow(map[key].val('TARGET'),map[key].val('RELATION'),map[key].val('FNAME'),0);
+					   //console.log(data[i].val('RELATION')+":"+data[i].val('TARGET'));
+						count++;
+					}
 				}else{
 					if(map[key].val('RELATION')==map[pre].val('RELATION')){
 						content+=this.createFeatureCollumn(map[key].val('TARGET'), map[key].val('FNAME'));
@@ -1109,22 +1205,27 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 				count++;
 			}
 			content+='</div>';
-			dom.append(content);
+			dom.append($(content));
 			console.log("asump:"+this.count+" fact:"+this.featurecount);
-			if(flag==0){
-				var list=this.comp("dropmenu");
+			var list=$('#dropmenu');
 				//delete(list);
-				list.clear();
-				var doc="<li class='x-menu-item menu-item' xid='item1' data-bind='click:RelationChange'>Relation</i>";
-				for(key in relationmap){
-					 doc+="<li class='x-menu-item menu-item' xid='item1' data-bind='click:RelationChange'>";
-					doc+=key+"</i>";
-				}
-				justep.Bind.addNodes(list.domNode,$(doc));
+			list.empty();
+			//debugger
+			var doc="<li class='x-menu-item menu-item item-left' xid='item1'>all</i>";
+			for(key in this.relationmapleft){
+				 doc+="<li class='x-menu-item menu-item item-left' xid='item1'>";
+				doc+=key+"</i>";
 			}
+			list.append($(doc));
+			var me=this;
+			//$('.item-left').off('click');
+			$('.item-left').on('click',function(){
+				var category=$(this)[0].innerText;
+				me.RelationChange(category);
+			});
 			console.log("search");
 		};
-		Model.prototype.createSimFeature=function(){
+		Model.prototype.createSimFeature=function(category){
 			var simdata=this.comp("simfeature");
 			var count=0;
 			var parNode=$('#rec');
@@ -1132,16 +1233,44 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 			var me=this;
 			var map={};
 			var order=1;
-			simdata.each(function(params){
-				map[me.simfeaturemap[order++]]=params.row;
-			});
+			var tag=0;
+			var flag=0;
+			if(category&&category!='all'){
+				flag=1;
+				var data=simdata.find(["RELATION"],[category]);
+				for(var i=0;i<data.length;i++){
+					map[me.simfeaturemap[i+1]]=data[i];
+				}
+			}else{
+				simdata.each(function(params){
+					map[me.simfeaturemap[order++]]=params.row;
+				});
+			}
+			if(flag==0){
+				this.relationmapright={};
+			}
 			for(var key in map){
 				if(count==0){
-						var target=map[key].val('TARGET');
-						var url=map[key].val('FNAME');
-						var relation=map[key].val('RELATION');
-						content+=me.createSimRow('',target,url,relation);
-						count++;
+						if(tag==0){
+							var target=map[key].val('TARGET');
+							var url=map[key].val('FNAME');
+							var relation=map[key].val('RELATION');
+							if(flag==0){
+								this.relationmapright[relation]=1;
+							}
+							content+=me.createSimRow('',target,url,relation);
+							count++;
+							tag++;
+						}else{
+							var target=map[key].val('TARGET');
+							var url=map[key].val('FNAME');
+							var relation=map[key].val('RELATION');
+							if(flag==0){
+								this.relationmapright[relation]=1;
+							}
+							content+=me.createSimRow('Relation',target,url,relation);
+							count++;
+						}
 					}else{
 						var target=map[key].val('TARGET');
 						var url=map[key].val('FNAME');
@@ -1154,6 +1283,21 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 						}
 					}
 			}
+			//debugger
+				var list=$("#dropmenuright");
+				list.empty();
+				var doc="<li class='x-menu-item menu-item item-right' xid='item1'>all</i>";
+				for(key in this.relationmapright){
+					 doc+="<li class='x-menu-item menu-item item-right' xid='item1'>";
+					doc+=key+"</i>";
+				}
+				list.append($(doc));
+			
+			$('.item-right').on('click',function(){
+				//debugger
+				var query=$(this)[0].innerText;
+				me.RelationChangeRight(query);
+			});
 			console.log("recommend feature");
 		};
 		Model.prototype.resultLoad=function(query){
@@ -1173,6 +1317,7 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 					//debugger
 					var entityList=result['queryEntity'];
 					var featureList=result['queryFeatureList'];
+					if(entityList.length==0) justep.Util.hint("we don't have the information of the Entity!");
 					for(var i=0;i<entityList.length;i++){
 						me.getImageURL(entityList[i]["name"],i+1,1);
 					}
@@ -1205,16 +1350,15 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 					data.confirmDelete=false;
 					data.deleteAllData();
 					//debugger
-					var simList=result['simEntityList'];
-					var categoryList=result['simCategoryList'];
-					me.simcount=simList.length;
+					//var categoryList=result['simCategoryList'];
+					me.simcount=result.length;
 					var list=new Array();
-					for(var i=0;i<simList.length;i++){
-						me.getImageURL(simList[i]['name'],i+1,2);
-						list.push(simList[i]['name']);
-						me.simEntityMap[simList[i]['name']]=categoryList[i]['name'];
+					for(var i=0;i<result.length;i++){
+						me.getImageURL(result[i]['name'],i+1,2);
+						list.push(result[i]['name']);
+						//me.simEntityMap[simList[i]['name']]=categoryList[i]['name'];
 					}
-					me.Visualization(query,simList);
+					//me.Visualization(query,simList);
 					me.simEntity=list;
 				},
 				error:function(er,status){
@@ -1306,14 +1450,22 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 				}
 			});	*/
 	};
-	Model.prototype.RelationChange=function(event,param){
-		 var relation=param.target.innerText;
-		var dom=this.comp("buttonswip");
-		var query=dom.get('label');
+	Model.prototype.RelationChange=function(relation){
+		 var query=this.currentQuery;
 		if(this.querymap.hasOwnProperty(query)){
 			this.createFeature(this.querymap[query],relation);
 		}
 	};
+	Model.prototype.RelationChangeRight=function(relation){
+		var parNode=$('#rec');
+		parNode.empty();
+		var dom=$('#checkType');
+		this.flag=false;
+		if(dom.is(':checked')){
+			this.createRecommendSim();
+		}
+		this.createSimFeature(relation);
+	}
 	Model.prototype.Visualization=function(query,target){
 	//debugger 
 			var me=this;
@@ -1322,12 +1474,9 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 			var repnum=1000;
 			var size=80;
 			if(target){
-				dom1=this.getElementByXid("relaEx");//获取容器实现数据可视化
 				for(var i=0;i<target.length;i++){
 					list.push(target[i]['name']);
 				}
-				repnum=100;
-				size=50;
 			}
 			$.ajax({
 				url:"http://localhost:8080/seed/getExAllPath",
@@ -1443,27 +1592,16 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 				dataType:'json',
 				contentType:'application/json',
 				success:function(result,status){
-					var dom1=me.getElementByXid("metapath");//获取容器实现数据可视化
-				    var category=result[0]['category']['name'];
-				    var relation=result[0]['relation']['name'];
-				    var type=result[0]['type'];
-				    var re=1;
-				    var ca=0;
-				    if(type==0){
-				    	me.MetaPathVisual(dom1,relation,re,category,ca);
-				    }else{
-				    	me.MetaPathVisual(dom1,category,ca,relation,re);
-				    }
+				//debugger
 				    me.relationPath={};
 				    me.categoryPath={};
-				    for(var i=0;i<result.length;i++){
-				    	if(result[i]['type']==0){
-				    		me.relationPath[result[i]['relation']['name']]=result[i]['category']['name'];
-				    	}else{
-				    		me.categoryPath[result[i]['category']['name']]=result[i]['relation']['name'];
-				    	}
-				    }
-				   me.createMetaPathSelect();
+				    for(var key in result['category']){
+				    	me.categoryPath[key]=result['category'][key]
+				   	}
+				   	for(var key in result['relation']){
+				   		me.relationPath[key]=result['relation'][key];
+				   	}
+				    me.createMetaPathSelect();
 				   	console.log("visulization");
 				},
 				error:function(er,status){
@@ -1472,11 +1610,19 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 			});
 	};
 	Model.prototype.createMetaPathSelect=function(){
+	//debugger
 		var dom=$('#categoryselect');
 		dom.empty();
 		var doc='<option value="All" selected="true">All</option>';
+		var data=[{"name":"Query","category":2,"draggable":true}];
+		var link=[];
+		//var data=null;
+		//var link=null;
+		var i=0;
 		for(var key in this.categoryPath){
 			doc+='<option value="'+key+'">'+key+'</option>';
+			array.merge(data, [{"name":key,"category":0,"draggable":true}]);
+			array.merge(link, [{"source":"Query","target":key,"value":""}]);
 		}
 		dom.append(doc);
 		dom=$('#relationselect');
@@ -1486,16 +1632,81 @@ Model.prototype.MetaPathVisual = function(dom,head,catehead,tail,catetail){
 			doc+='<option value="'+key+'">'+key+"</option>";
 		}
 		dom.append(doc);
+		var visdom=this.getElementByXid("metapathvis");
+		this.MetaPathVisual(visdom,"Meta Path Explore",data,link);
 	};
 	Model.prototype.categoryselectChange = function(event){
 			var head=$('#categoryselect').val();
-			var dom=this.getElementByXid("metapath");
-			this.MetaPathVisual(dom,head,0,this.categoryPath[head],1);
+			var dom=this.getElementByXid("metapathvis");
+			var data=[{"name":"Query","category":2,"draggable":true}];
+			var link=[];
+			for(var key in this.categoryPath){
+				array.merge(data, [{"name":key,"category":0,"draggable":true}]);
+				array.merge(link, [{"source":"Query","target":key,"value":""}]);
+			}
+			//console.log(this.categoryPath[head]['nodeList']);
+			if(head!="All"){
+				array.merge(data,this.categoryPath[head]['nodeList']);
+				array.merge(link,this.categoryPath[head]['linkList']);
+			}
+			this.MetaPathVisual(dom,"Meta Path Explore",data,link);
 	};
 	Model.prototype.relationselectChange = function(event){
 		var head=$('#relationselect').val();
-		var dom=this.getElementByXid("metapath");
-		this.MetaPathVisual(dom,head,1,this.relationPath[head],0);
+		var dom=this.getElementByXid("metapathvis");
+		var data=[{"name":"Query","category":2,"draggable":true}];
+		var link=[];
+		for(var key in this.relationPath){
+				array.merge(data, [{"name":key,"category":1,"draggable":true}]);
+				array.merge(link, [{"source":"Query","target":key,"value":""}]);
+		}
+		if(head!="All"){
+			array.merge(data,this.relationPath[head]['nodeList']);
+			array.merge(link,this.relationPath[head]['linkList']);
+		}
+		this.MetaPathVisual(dom,"Meta Path Explore",data,link);
 	};
+	Model.prototype.switchVisClick = function(event){
+		var dom=this.getElementByXid('viscontainer');
+		var head=$('#selecthead');
+		var tail=$('#selecttail');
+		head.empty();
+		tail.empty();
+		var doc='';
+		//debugger
+		
+		for(var i=0;i<this.query.length;i++){
+			if(i==0){
+				doc='<option value="'+this.query[i]+'" selected="true">'+this.query[i]+'</option>';
+			}else{
+				doc+='<option value="'+this.query[i]+'">'+this.query[i]+'</option>';
+		  }
+		}
+		head.append(doc);
+		doc='<option value="All" selected="true">All</option>';
+		for(var i=0;i<this.simEntity.length;i++){
+			doc+='<option value="'+this.simEntity[i]+'">'+this.simEntity[i]+'</option>';
+		}
+		tail.append(doc);
+		var desc="Relation Explaination";
+		if(this.data!=null&&this.link!=null){
+			this.DataVisual(dom, desc, this.data, this.link, 1000,80);
+		}else{
+			this.Visualization(this.query);
+		}
+	};
+	Model.prototype.createQuery=function(event){
+		var parNode=this.getElementByXid("btncontainer");
+		if(parNode){
+			var flag={
+			xid:"Query1",
+			label:event,
+			parentNode:parNode,
+			'class':'btn btn-success btn-drag'
+			};
+			//debugger
+			new Button(flag);
+		}
+	}
 	return Model;
 });
